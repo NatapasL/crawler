@@ -12,7 +12,8 @@ type Series struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 
-	Names     []SeriesName  `gorm:"foreignKey:SeriesID"`
-	Genres    []SeriesGenre `gorm:"foreignKey:SeriesID"`
-	Publisher Publisher
+	Names        []SeriesName  `gorm:"foreignKey:SeriesID"`
+	Genres       []SeriesGenre `gorm:"foreignKey:SeriesID"`
+	Publisher    Publisher
+	NameMatchers []SeriesNameMatcher `gorm:"foreignKey:SeriesID"`
 }
