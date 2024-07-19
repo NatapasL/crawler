@@ -1,5 +1,0 @@
-package siamintershop
-
-func toDbSeries() {
-
-}
