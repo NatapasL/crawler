@@ -1,7 +1,6 @@
-package postgres
+package postgresrepository
 
 import (
-	"fmt"
 	"log"
 	"manga-crawler/internal/infrastructure/model"
 
@@ -17,22 +16,9 @@ func NewSeriesRepository(db *gorm.DB) *SeriesRepository {
 	return &SeriesRepository{db}
 }
 
-func (repository SeriesRepository) FindByName(name string) []model.Series {
-	var seriesNames []model.SeriesName
-	repository.db.Select("series_id").Distinct("series_id").Where("name LIKE ?", fmt.Sprintf("%%%s%%", name)).Find(&seriesNames)
-
+func (repository SeriesRepository) FindByIds(ids []uuid.UUID) []model.Series {
 	var series []model.Series
-
-	if len(seriesNames) < 1 {
-		return series
-	}
-
-	var seriesIds []uuid.UUID
-	for _, seriesName := range seriesNames {
-		seriesIds = append(seriesIds, seriesName.SeriesID)
-	}
-
-	repository.db.Joins("LEFT JOIN series_name ON series_name.series_id = series.id").Where("series.id IN ?", seriesIds).Find(&series)
+	repository.db.Joins("series_name ON series_name.series_id = series.id").Where("series.id IN ?", ids).Find(&series)
 
 	return series
 }

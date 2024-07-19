@@ -7,6 +7,5 @@ import (
 )
 
 type SeriesRepository interface {
-	FindByName(string) []model.Series
-	Persist(series model.Series) (*uuid.UUID, error)
+	Persist(model.Series) (*uuid.UUID, error)
 }

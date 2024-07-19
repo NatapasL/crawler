@@ -3,11 +3,11 @@ package siamintershop
 import "log"
 
 type Scraper struct {
-	seriesUpdater        SeriesUpdater
-	productSearchScraper ProductSearchScraper
+	updateSeriesByProductService UpdateSeriesByProductService
+	productSearchScraper         ProductSearchScraper
 }
 
-func NewScraper(seriesUpdater SeriesUpdater, productSearchScraper ProductSearchScraper) *Scraper {
+func NewScraper(seriesUpdater UpdateSeriesByProductService, productSearchScraper ProductSearchScraper) *Scraper {
 	return &Scraper{seriesUpdater, productSearchScraper}
 }
 
@@ -18,5 +18,5 @@ func (scraper Scraper) Scrape() {
 		return
 	}
 
-	scraper.seriesUpdater.UpdateSeries(products)
+	scraper.updateSeriesByProductService.UpdateSeries(products)
 }
