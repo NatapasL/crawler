@@ -3,9 +3,8 @@ package main
 import (
 	"log"
 	"manga-crawler/config"
-	"manga-crawler/internal/domain/scraper/namecleaner"
-	"manga-crawler/internal/domain/scraper/siamintershop"
 	"manga-crawler/internal/infrastructure/database/postgres"
+	postgresrepository "manga-crawler/internal/infrastructure/repository/postgres_repository"
 )
 
 func main() {
@@ -16,14 +15,9 @@ func main() {
 		return
 	}
 
-	seriesRepository := postgres.NewSeriesRepository(db)
+	seriesRepository := postgresrepository.NewSeriesRepository(db)
+	seriesNameMatcherRepository := postgresrepository.NewSeriesNameMatcherRepository(db)
+	siamintershopContainer := NewSiamintershopScraperContainer(seriesRepository, seriesNameMatcherRepository)
 
-	regexpPattern := namecleaner.NewRegexpPattern(siamintershop.GetNameCleanerPattern())
-	nameCleaner := namecleaner.NewNameCleaner(regexpPattern)
-	seriesUpdater := siamintershop.NewSeriesUpdater(nameCleaner, seriesRepository)
-	productSearchFetcher := siamintershop.NewProductSearchFetcher()
-	productSearchScraper := siamintershop.NewProductSearchScraper(*productSearchFetcher)
-	scraper := siamintershop.NewScraper(*seriesUpdater, *productSearchScraper)
-
-	scraper.Scrape()
+	siamintershopContainer.scraper.Scrape()
 }
