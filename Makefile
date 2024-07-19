@@ -1,6 +1,6 @@
 dcl:
 	air -c crawler.air.toml
 rcl:
-	go run ./cmd/crawler/main.go
+	go run ./cmd/crawler/
 migrate:
-	go run ./cmd/migration/main.go
+	go run ./cmd/migration/
