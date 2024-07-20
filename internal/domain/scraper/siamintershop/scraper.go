@@ -1,22 +1,35 @@
 package siamintershop
 
-import "log"
+import (
+	siamintershopproductdetail "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_product_detail"
+	siamintershopproductsearch "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_product_search"
+)
 
 type Scraper struct {
-	updateSeriesByProductService UpdateSeriesByProductService
-	productSearchScraper         ProductSearchScraper
+	productSearchScraper         siamintershopproductsearch.ProductSearchScraper
+	productSearchResponseService siamintershopproductsearch.ResponseService
+
+	productDetailScraper siamintershopproductdetail.ProductDetailScraper
 }
 
-func NewScraper(seriesUpdater UpdateSeriesByProductService, productSearchScraper ProductSearchScraper) *Scraper {
-	return &Scraper{seriesUpdater, productSearchScraper}
+func NewScraper(
+	productSearchScraper siamintershopproductsearch.ProductSearchScraper,
+	productSearchResponseService siamintershopproductsearch.ResponseService,
+	productDetailScraper siamintershopproductdetail.ProductDetailScraper,
+) *Scraper {
+	return &Scraper{productSearchScraper, productSearchResponseService, productDetailScraper}
 }
 
 func (scraper Scraper) Scrape() {
-	products, err := scraper.productSearchScraper.Scrape()
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	// responseProducts, err := scraper.productSearchScraper.Scrape()
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return
+	// }
 
-	scraper.updateSeriesByProductService.UpdateSeries(products)
+	// product := model.New
+
+	// scraper.updateSeriesByProductService.UpdateSeries(products)
+
+	scraper.productDetailScraper.Scrape("11000408800022331")
 }

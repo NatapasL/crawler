@@ -1,4 +1,4 @@
-package siamintershop
+package siamintershopproductsearch
 
 import (
 	siamintershopgateway "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_gateway"
@@ -21,9 +21,9 @@ type ProductSearchScraper struct {
 	gateway        siamintershopgateway.ProductSearchGateway
 }
 
-func NewProductSearchScraper(productSearchFetcher siamintershopgateway.ProductSearchGateway) *ProductSearchScraper {
+func NewProductSearchScraper(productSearchGateway siamintershopgateway.ProductSearchGateway) *ProductSearchScraper {
 	return &ProductSearchScraper{
-		gateway: productSearchFetcher,
+		gateway: productSearchGateway,
 		config: productSearchScraperConfig{
 			categoryId: "654",
 		},
@@ -34,7 +34,7 @@ func NewProductSearchScraper(productSearchFetcher siamintershopgateway.ProductSe
 	}
 }
 
-func (pss ProductSearchScraper) Scrape() ([]SiamintershopProduct, error) {
+func (pss ProductSearchScraper) Scrape() ([]ProductSearchResponseProduct, error) {
 	total, err := pss.getTotalProducts()
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (pss ProductSearchScraper) Scrape() ([]SiamintershopProduct, error) {
 func (pss ProductSearchScraper) getTotalProducts() (int, error) {
 	response, err := pss.gateway.Request(pss.config.categoryId, 0, 1)
 
-	siamintershopResponse := NewSiamintershopResponseFromBytes(response)
+	siamintershopResponse := NewProductSearchResponse(response)
 	if err != nil {
 		return 0, err
 	}
@@ -64,8 +64,8 @@ func (pss ProductSearchScraper) getTotalProducts() (int, error) {
 	return total, nil
 }
 
-func (pss ProductSearchScraper) iterateGetProducts(total int) ([]SiamintershopProduct, error) {
-	var products []SiamintershopProduct
+func (pss ProductSearchScraper) iterateGetProducts(total int) ([]ProductSearchResponseProduct, error) {
+	var products []ProductSearchResponseProduct
 	chunkSize := pss.intervalConfig.chunkSize
 
 	for i := 0; i*chunkSize < total; i++ {
@@ -81,10 +81,10 @@ func (pss ProductSearchScraper) iterateGetProducts(total int) ([]SiamintershopPr
 	return products, nil
 }
 
-func (pss ProductSearchScraper) getProducts(limit int, offset int) ([]SiamintershopProduct, error) {
+func (pss ProductSearchScraper) getProducts(limit int, offset int) ([]ProductSearchResponseProduct, error) {
 	response, err := pss.gateway.Request(pss.config.categoryId, offset, limit)
 
-	siamintershopResponse := NewSiamintershopResponseFromBytes(response)
+	siamintershopResponse := NewProductSearchResponse(response)
 	if siamintershopResponse == nil {
 		return nil, err
 	}

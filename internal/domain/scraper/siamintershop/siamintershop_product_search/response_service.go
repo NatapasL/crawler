@@ -1,0 +1,43 @@
+package siamintershopproductsearch
+
+import (
+	"manga-crawler/internal/domain/scraper/namecleaner"
+	seriesnamematcher "manga-crawler/internal/domain/scraper/series_name_matcher"
+	"manga-crawler/internal/infrastructure/model"
+
+	"github.com/google/uuid"
+)
+
+type ResponseService struct {
+	nameCleaner              namecleaner.NameCleaner
+	seriesNameMatcherService seriesnamematcher.SeriesNameMatcherService
+}
+
+func NewResponseService(
+	nameCleaner namecleaner.NameCleaner,
+	seriesNameMatcherService seriesnamematcher.SeriesNameMatcherService,
+) *ResponseService {
+	return &ResponseService{nameCleaner, seriesNameMatcherService}
+}
+
+func (service ResponseService) AddSeriesNameMatcherIfNotExists(products []ProductSearchResponseProduct) []error {
+	var errs []error
+	for _, product := range products {
+		nameMatcher := service.mapResponseProductToSeriesNameMatcher(product)
+
+		publisherId, _ := uuid.FromBytes([]byte("01eb250e-57ad-4be1-8906-dc1527de6238"))
+		err := service.seriesNameMatcherService.CreateIfNotExists(nameMatcher, publisherId)
+		if err != nil {
+			errs = append(errs, err)
+		}
+	}
+
+	return errs
+}
+
+func (service ResponseService) mapResponseProductToSeriesNameMatcher(product ProductSearchResponseProduct) model.SeriesNameMatcher {
+	return model.SeriesNameMatcher{
+		ID:   uuid.New(),
+		Name: service.nameCleaner.Clean(product.ProductName),
+	}
+}

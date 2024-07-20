@@ -8,7 +8,3 @@ func GetNameCleanerPattern() []string {
 		`\+15.5`, `\+ Movie`, ` เล่มเดียวจบ`,
 	}
 }
-
-type NameCleaner interface {
-	Clean(string) string
-}
