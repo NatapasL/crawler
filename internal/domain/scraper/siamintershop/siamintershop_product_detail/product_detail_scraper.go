@@ -1,25 +1,18 @@
 package siamintershopproductdetail
 
-import (
-	"fmt"
-	siamintershopgateway "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_gateway"
-)
-
 type ProductDetailScraper struct {
-	gateway siamintershopgateway.GetProductDetailGateway
+	gateway GetProductDetailGateway
 }
 
-func NewProductDetailScraper(gateway siamintershopgateway.GetProductDetailGateway) *ProductDetailScraper {
+func NewProductDetailScraper(gateway GetProductDetailGateway) *ProductDetailScraper {
 	return &ProductDetailScraper{gateway}
 }
 
-func (pds ProductDetailScraper) Scrape(productId string) {
+func (pds ProductDetailScraper) Scrape(productId string) (*ProductDetailResponse, error) {
 	response, err := pds.gateway.Request(productId)
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	product := NewProductDetailResponse(response)
-
-	fmt.Printf("%+v", product)
+	return NewProductDetailResponse(response), nil
 }

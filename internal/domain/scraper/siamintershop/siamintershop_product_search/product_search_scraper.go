@@ -1,7 +1,6 @@
 package siamintershopproductsearch
 
 import (
-	siamintershopgateway "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_gateway"
 	"strconv"
 	"time"
 )
@@ -18,10 +17,10 @@ type productSearchScraperConfig struct {
 type ProductSearchScraper struct {
 	config         productSearchScraperConfig
 	intervalConfig productSearchScraperIntervalConfig
-	gateway        siamintershopgateway.ProductSearchGateway
+	gateway        ProductSearchGateway
 }
 
-func NewProductSearchScraper(productSearchGateway siamintershopgateway.ProductSearchGateway) *ProductSearchScraper {
+func NewProductSearchScraper(productSearchGateway ProductSearchGateway) *ProductSearchScraper {
 	return &ProductSearchScraper{
 		gateway: productSearchGateway,
 		config: productSearchScraperConfig{

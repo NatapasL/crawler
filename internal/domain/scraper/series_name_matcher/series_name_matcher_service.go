@@ -28,14 +28,12 @@ func (service SeriesNameMatcherService) CreateIfNotExists(nameMatcher model.Seri
 		return nil
 	}
 
-	nameMatcherId := service.seriesNameMatcherRepository.Persist(nameMatcher)
+	service.seriesNameMatcherRepository.Persist(nameMatcher)
 
-	seriesId, err := service.addSeries(nameMatcher)
+	err := service.addSeries(nameMatcher)
 	if err != nil {
 		return err
 	}
-
-	service.attachSeriesToNameMatcher(*seriesId, nameMatcherId)
 
 	return nil
 }
@@ -46,16 +44,18 @@ func (service SeriesNameMatcherService) isExists(nameMatcher model.SeriesNameMat
 	return len(nameMatchers) > 0
 }
 
-func (service SeriesNameMatcherService) addSeries(nameMatcher model.SeriesNameMatcher) (*uuid.UUID, error) {
+func (service SeriesNameMatcherService) addSeries(nameMatcher model.SeriesNameMatcher) error {
 	publisherId, _ := uuid.FromBytes([]byte("C941BB52-50BA-4273-81D6-2A56831B5B3A"))
 	series := service.seriesNameMatcherToSeriesMapper.Map(nameMatcher, publisherId)
 
 	seriesId, err := service.seriesRepository.Persist(series)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return seriesId, nil
+	service.attachSeriesToNameMatcher(*seriesId, nameMatcher.ID)
+
+	return nil
 }
 
 func (service SeriesNameMatcherService) attachSeriesToNameMatcher(seriesId uuid.UUID, nameMatcherId uuid.UUID) error {

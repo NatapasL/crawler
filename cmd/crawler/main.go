@@ -6,6 +6,7 @@ import (
 	"manga-crawler/internal/domain/scraper/namecleaner"
 	seriesnamematcher "manga-crawler/internal/domain/scraper/series_name_matcher"
 	"manga-crawler/internal/domain/scraper/siamintershop"
+	siamintershopcategorylist "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_category_list"
 	siamintershopproductdetail "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_product_detail"
 	siamintershopproductsearch "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_product_search"
 	siamintershopgapi "manga-crawler/internal/infrastructure/api_gateway/siamintershop_api"
@@ -38,6 +39,8 @@ func main() {
 	apiRequest := siamintershopgapi.ApiRequest{}
 	productSearchApi := siamintershopgapi.NewProductSearchApi(apiRequest)
 	getProductDetailApi := siamintershopgapi.NewGetProductDetailApi(apiRequest)
+	getCategoryListApi := siamintershopgapi.NewGetCategoryListApi(apiRequest)
+
 	regexpPattern := namecleaner.NewRegexpPattern(siamintershop.GetNameCleanerPattern())
 	nameCleaner := namecleaner.NewNameCleaner(regexpPattern)
 
@@ -47,13 +50,19 @@ func main() {
 
 	// siamintershop product detail
 	siamintershopProductDetailScraper := siamintershopproductdetail.NewProductDetailScraper(getProductDetailApi)
+	siamintershopProductDetailResponseService := siamintershopproductdetail.NewResponseService(*nameCleaner, *seriesNameMatcherService)
+
+	// siamintershop category list
+	siamintershopCategoryListScraper := siamintershopcategorylist.NewCategoryListScraper(getCategoryListApi)
 
 	siamintershopScraper := siamintershop.NewScraper(
 		*siamintershopProductSearchScraper,
 		*siamintershopProductSearchResponseService,
 		*siamintershopProductDetailScraper,
+		*siamintershopProductDetailResponseService,
+		*siamintershopCategoryListScraper,
 	)
 
 	// run
-	siamintershopScraper.Scrape()
+	siamintershopScraper.ScrapeProductDetail()
 }
