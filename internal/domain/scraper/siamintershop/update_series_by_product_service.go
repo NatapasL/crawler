@@ -1,6 +1,7 @@
 package siamintershop
 
 import (
+	siamintershoprepository "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_repository"
 	"manga-crawler/internal/infrastructure/model"
 	"time"
 
@@ -9,14 +10,14 @@ import (
 
 type UpdateSeriesByProductService struct {
 	nameCleaner                 NameCleaner
-	seriesRepository            SeriesRepository
-	seriesNameMatcherRepository SeriesNameMatcherRepository
+	seriesRepository            siamintershoprepository.SeriesRepository
+	seriesNameMatcherRepository siamintershoprepository.SeriesNameMatcherRepository
 }
 
 func NewUpdateSeriesByProductService(
 	nameCleaner NameCleaner,
-	seriesRepository SeriesRepository,
-	seriesNameMatcherRepository SeriesNameMatcherRepository,
+	seriesRepository siamintershoprepository.SeriesRepository,
+	seriesNameMatcherRepository siamintershoprepository.SeriesNameMatcherRepository,
 ) *UpdateSeriesByProductService {
 	return &UpdateSeriesByProductService{nameCleaner, seriesRepository, seriesNameMatcherRepository}
 }

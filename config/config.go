@@ -6,6 +6,11 @@ const dbConnectionString = "host=localhost user=postgres password=1234 dbname=ma
 
 type Config struct {
 	Postgres postgres.PostgresConnectionConfig
+	Http     HttpConfig
+}
+
+type HttpConfig struct {
+	UserAgent string
 }
 
 var config *Config
@@ -21,6 +26,9 @@ func GetConfig() Config {
 				Port:     "5432",
 				SslMode:  "disable",
 				TimeZone: "Asia/Bangkok",
+			},
+			Http: HttpConfig{
+				UserAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
 			},
 		}
 	}

@@ -1,4 +1,4 @@
-package siamintershop
+package siamintershoprepository
 
 import (
 	"manga-crawler/internal/infrastructure/model"

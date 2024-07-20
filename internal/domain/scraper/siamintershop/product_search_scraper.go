@@ -1,6 +1,7 @@
 package siamintershop
 
 import (
+	siamintershopgateway "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_gateway"
 	"strconv"
 	"time"
 )
@@ -15,14 +16,14 @@ type productSearchScraperConfig struct {
 }
 
 type ProductSearchScraper struct {
-	config               productSearchScraperConfig
-	intervalConfig       productSearchScraperIntervalConfig
-	productSearchFetcher ProductSearchFetcher
+	config         productSearchScraperConfig
+	intervalConfig productSearchScraperIntervalConfig
+	gateway        siamintershopgateway.ProductSearchGateway
 }
 
-func NewProductSearchScraper(productSearchFetcher ProductSearchFetcher) *ProductSearchScraper {
+func NewProductSearchScraper(productSearchFetcher siamintershopgateway.ProductSearchGateway) *ProductSearchScraper {
 	return &ProductSearchScraper{
-		productSearchFetcher: productSearchFetcher,
+		gateway: productSearchFetcher,
 		config: productSearchScraperConfig{
 			categoryId: "654",
 		},
@@ -48,12 +49,7 @@ func (pss ProductSearchScraper) Scrape() ([]SiamintershopProduct, error) {
 }
 
 func (pss ProductSearchScraper) getTotalProducts() (int, error) {
-	response, err := pss.productSearchFetcher.Fetch(productSearchFilter{
-		Limit:             1,
-		Offset:            0,
-		CategoryId:        pss.config.categoryId,
-		CategoryWithChild: true,
-	})
+	response, err := pss.gateway.Request(pss.config.categoryId, 0, 1)
 
 	siamintershopResponse := NewSiamintershopResponseFromBytes(response)
 	if err != nil {
@@ -86,12 +82,7 @@ func (pss ProductSearchScraper) iterateGetProducts(total int) ([]SiamintershopPr
 }
 
 func (pss ProductSearchScraper) getProducts(limit int, offset int) ([]SiamintershopProduct, error) {
-	response, err := pss.productSearchFetcher.Fetch(productSearchFilter{
-		Limit:             limit,
-		Offset:            offset,
-		CategoryId:        pss.config.categoryId,
-		CategoryWithChild: true,
-	})
+	response, err := pss.gateway.Request(pss.config.categoryId, offset, limit)
 
 	siamintershopResponse := NewSiamintershopResponseFromBytes(response)
 	if siamintershopResponse == nil {
