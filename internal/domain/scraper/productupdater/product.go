@@ -12,9 +12,9 @@ type Product struct {
 	wholesaleID uuid.UUID
 	externalID  string
 	sourceUrl   string
+	seriesID    uuid.UUID
 
-	SeriesID uuid.UUID
-	Price    ProductPrice
+	Price ProductPrice
 }
 
 type NewProductArgs struct {
@@ -55,4 +55,8 @@ func (p Product) ToSeriesNameMatcher(nameCleaner namecleaner.NameCleaner) Series
 	return NewSeriesNameMatcher(NewSeriesNameMatcherArgs{
 		Name: nameCleaner.Clean(p.name),
 	})
+}
+
+func (p *Product) AttachToSeries(series Series) {
+	p.seriesID = series.ID()
 }

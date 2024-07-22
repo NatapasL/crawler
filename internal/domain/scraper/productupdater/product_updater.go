@@ -74,7 +74,7 @@ func (pu ProductUpdater) addNewProduct(product Product, publisherId uuid.UUID) e
 		}
 	}
 
-	series.AddProduct(product)
-	_, err = pu.seriesRepository.Persist(*series)
+	product.AttachToSeries(*series)
+	_, err = pu.productRepository.Persist(product)
 	return err
 }

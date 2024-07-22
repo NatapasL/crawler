@@ -18,7 +18,7 @@ func (service NameMatcherAttacherService) AttachToNonExistingSeries(snm SeriesNa
 		return nil, err
 	}
 
-	snm.SeriesID = series.ID()
+	snm.AttachToSeries(*series)
 	err = service.seriesNameMatcherRepository.Persist(snm)
 	if err != nil {
 		return nil, err

@@ -10,8 +10,6 @@ type Series struct {
 	id          uuid.UUID
 	name        string
 	publisherID uuid.UUID
-
-	products []Product
 }
 
 type NewSeriesArgs struct {
@@ -30,10 +28,6 @@ func NewSeries(args NewSeriesArgs) (*Series, error) {
 
 func (s Series) ID() uuid.UUID {
 	return s.id
-}
-
-func (s *Series) AddProduct(product Product) {
-	s.products = append(s.products, product)
 }
 
 func (s Series) validate() error {

@@ -14,5 +14,5 @@ func (s SeriesFinderService) FindByNameMatcher(snm SeriesNameMatcher) (*Series, 
 		return nil, nil
 	}
 
-	return s.seriesRepository.FindById(existingNameMatcher.SeriesID)
+	return s.seriesRepository.FindById(existingNameMatcher.seriesID)
 }

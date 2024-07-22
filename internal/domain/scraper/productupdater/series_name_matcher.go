@@ -3,10 +3,9 @@ package productupdater
 import "github.com/google/uuid"
 
 type SeriesNameMatcher struct {
-	id   uuid.UUID
-	name string
-
-	SeriesID uuid.UUID
+	id       uuid.UUID
+	name     string
+	seriesID uuid.UUID
 }
 
 type NewSeriesNameMatcherArgs struct {
@@ -30,4 +29,8 @@ func (snm SeriesNameMatcher) Name() string {
 
 func (snm SeriesNameMatcher) ToSeries(publisherId uuid.UUID) (*Series, error) {
 	return NewSeries(NewSeriesArgs{Name: snm.name, PublisherID: publisherId})
+}
+
+func (snm *SeriesNameMatcher) AttachToSeries(series Series) {
+	snm.seriesID = series.ID()
 }
