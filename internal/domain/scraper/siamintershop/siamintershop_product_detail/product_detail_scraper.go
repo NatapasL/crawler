@@ -4,8 +4,12 @@ type ProductDetailScraper struct {
 	gateway GetProductDetailGateway
 }
 
-func NewProductDetailScraper(gateway GetProductDetailGateway) *ProductDetailScraper {
-	return &ProductDetailScraper{gateway}
+type ProductDetailScraperDependencies struct {
+	Gateway GetProductDetailGateway
+}
+
+func NewProductDetailScraper(deps ProductDetailScraperDependencies) *ProductDetailScraper {
+	return &ProductDetailScraper{gateway: deps.Gateway}
 }
 
 func (pds ProductDetailScraper) Scrape(productId string) (*ProductDetailResponse, error) {

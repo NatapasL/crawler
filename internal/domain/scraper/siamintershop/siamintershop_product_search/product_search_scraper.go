@@ -5,23 +5,19 @@ import (
 	"time"
 )
 
-type productSearchScraperIntervalConfig struct {
-	chunkSize int
-	delay     time.Duration
-}
-
 type ProductSearchScraper struct {
 	intervalConfig productSearchScraperIntervalConfig
 	gateway        ProductSearchGateway
 }
 
-func NewProductSearchScraper(productSearchGateway ProductSearchGateway) *ProductSearchScraper {
+type ProductSearchScraperDependencies struct {
+	Gateway ProductSearchGateway
+}
+
+func NewProductSearchScraper(deps ProductSearchScraperDependencies) *ProductSearchScraper {
 	return &ProductSearchScraper{
-		gateway: productSearchGateway,
-		intervalConfig: productSearchScraperIntervalConfig{
-			chunkSize: 59,
-			delay:     1 * time.Second,
-		},
+		gateway:        deps.Gateway,
+		intervalConfig: defaultIntervalConfig(),
 	}
 }
 

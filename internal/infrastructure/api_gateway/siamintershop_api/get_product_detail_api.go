@@ -12,8 +12,12 @@ type GetProductDetailApi struct {
 	request ApiRequest
 }
 
-func NewGetProductDetailApi(request ApiRequest) *GetProductDetailApi {
-	return &GetProductDetailApi{request}
+type GetProductDetailApiDependencies struct {
+	Request ApiRequest
+}
+
+func NewGetProductDetailApi(deps GetProductDetailApiDependencies) *GetProductDetailApi {
+	return &GetProductDetailApi{request: deps.Request}
 }
 
 func (pdf GetProductDetailApi) Request(productId string) ([]byte, error) {

@@ -19,8 +19,12 @@ type ProductSearchApi struct {
 	request ApiRequest
 }
 
-func NewProductSearchApi(request ApiRequest) *ProductSearchApi {
-	return &ProductSearchApi{request}
+type ProductSearchApiDependencies struct {
+	Request ApiRequest
+}
+
+func NewProductSearchApi(deps ProductSearchApiDependencies) *ProductSearchApi {
+	return &ProductSearchApi{request: deps.Request}
 }
 
 func (psf ProductSearchApi) Request(categoryId string, offset int, limit int) ([]byte, error) {

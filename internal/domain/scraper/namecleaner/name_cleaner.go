@@ -8,8 +8,12 @@ type NameCleaner struct {
 	regexpPattern *RegexpPattern
 }
 
-func NewNameCleaner(regexpPattern *RegexpPattern) *NameCleaner {
-	return &NameCleaner{regexpPattern}
+type NameCleanerDependencies struct {
+	RegexpPattern *RegexpPattern
+}
+
+func NewNameCleaner(deps NameCleanerDependencies) *NameCleaner {
+	return &NameCleaner{regexpPattern: deps.RegexpPattern}
 }
 
 func (nc NameCleaner) Clean(name string) string {

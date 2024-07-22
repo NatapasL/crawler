@@ -10,8 +10,12 @@ type RegexpPattern struct {
 	patterns []string
 }
 
-func NewRegexpPattern(patterns []string) *RegexpPattern {
-	regexpPattern := RegexpPattern{patterns}
+type RegexpPatternDependencies struct {
+	Patterns []string
+}
+
+func NewRegexpPattern(deps RegexpPatternDependencies) *RegexpPattern {
+	regexpPattern := RegexpPattern{patterns: deps.Patterns}
 	regexpPattern.sort()
 
 	return &regexpPattern
@@ -31,10 +35,6 @@ func (rp *RegexpPattern) sort() {
 }
 
 func (rp RegexpPattern) patternPoint(pattern string) int {
-	// if strings.Contains(pattern, `^ `) || strings.Contains(pattern, ` $`) {
-	// 	return 5
-	// }
-
 	if strings.Contains(pattern, `\[`) {
 		return 4
 	}

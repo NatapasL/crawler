@@ -2,22 +2,28 @@ package container
 
 import siamintershopgapi "manga-crawler/internal/infrastructure/api_gateway/siamintershop_api"
 
-type SiamintershopApiModule struct {
+type siamintershopApiModule struct {
 	ApiRequest          *siamintershopgapi.ApiRequest
 	ProductSearchApi    *siamintershopgapi.ProductSearchApi
 	GetProductDetailApi *siamintershopgapi.GetProductDetailApi
 	GetCategoryListApi  *siamintershopgapi.GetCategoryListApi
 }
 
-type SiamintershopApiModuleDependency struct{}
+type siamintershopApiModuleDependency struct{}
 
-func InitializeSiamintershopApiModule(deps SiamintershopApiModuleDependency) SiamintershopApiModule {
+func initializeSiamintershopApiModule(deps siamintershopApiModuleDependency) siamintershopApiModule {
 	apiRequest := siamintershopgapi.ApiRequest{}
-	productSearchApi := siamintershopgapi.NewProductSearchApi(apiRequest)
-	getProductDetailApi := siamintershopgapi.NewGetProductDetailApi(apiRequest)
-	getCategoryListApi := siamintershopgapi.NewGetCategoryListApi(apiRequest)
+	productSearchApi := siamintershopgapi.NewProductSearchApi(
+		siamintershopgapi.ProductSearchApiDependencies{Request: apiRequest},
+	)
+	getProductDetailApi := siamintershopgapi.NewGetProductDetailApi(
+		siamintershopgapi.GetProductDetailApiDependencies{Request: apiRequest},
+	)
+	getCategoryListApi := siamintershopgapi.NewGetCategoryListApi(
+		siamintershopgapi.GetCategoryListApiDependencies{Request: apiRequest},
+	)
 
-	return SiamintershopApiModule{
+	return siamintershopApiModule{
 		ApiRequest:          &apiRequest,
 		ProductSearchApi:    productSearchApi,
 		GetProductDetailApi: getProductDetailApi,

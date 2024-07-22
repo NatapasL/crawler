@@ -16,12 +16,14 @@ type SeriesNameMatcherModuleDependencies struct {
 
 func InitializeSeriesNameMatcherModule(deps SeriesNameMatcherModuleDependencies) SeriesNameMatcherModule {
 	seriesNameMatcherToSeriesNameMapper := seriesnamematcher.NewSeriesNameMatcherToSeriesNameMapper()
-	seriesNameMatcherToSeriesMapper := seriesnamematcher.NewSeriesNameMatcherToSeriesMapper(*seriesNameMatcherToSeriesNameMapper)
-	seriesNameMatcherService := seriesnamematcher.NewSeriesNameMatcherService(
-		deps.RepositoryModule.SeriesNameMatcherRepository,
-		deps.RepositoryModule.SeriesRepository,
-		*seriesNameMatcherToSeriesMapper,
-	)
+	seriesNameMatcherToSeriesMapper := seriesnamematcher.NewSeriesNameMatcherToSeriesMapper(seriesnamematcher.SeriesNameMatcherToSeriesMapperDependencies{
+		SeriesNameMatcherToSeriesNameMapper: *seriesNameMatcherToSeriesNameMapper,
+	})
+	seriesNameMatcherService := seriesnamematcher.NewSeriesNameMatcherService(seriesnamematcher.SeriesNameMatcherServiceDependencies{
+		SeriesNameMatcherRepository:     deps.RepositoryModule.SeriesNameMatcherRepository,
+		SeriesRepository:                deps.RepositoryModule.SeriesRepository,
+		SeriesNameMatcherToSeriesMapper: *seriesNameMatcherToSeriesMapper,
+	})
 
 	return SeriesNameMatcherModule{
 		SeriesNameMatcherToSeriesNameMapper: seriesNameMatcherToSeriesNameMapper,

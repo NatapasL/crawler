@@ -11,28 +11,26 @@ import (
 type Scraper struct {
 	productSearchScraper         siamintershopproductsearch.ProductSearchScraper
 	productSearchResponseService siamintershopproductsearch.ResponseService
-
 	productDetailScraper         siamintershopproductdetail.ProductDetailScraper
 	productDetailResponseService siamintershopproductdetail.ResponseService
-
-	categoryListScraper siamintershopcategorylist.CategoryListScraper
+	categoryListScraper          siamintershopcategorylist.CategoryListScraper
 }
 
-func NewScraper(
-	productSearchScraper siamintershopproductsearch.ProductSearchScraper,
-	productSearchResponseService siamintershopproductsearch.ResponseService,
+type ScraperDependencies struct {
+	ProductSearchScraper         siamintershopproductsearch.ProductSearchScraper
+	ProductSearchResponseService siamintershopproductsearch.ResponseService
+	ProductDetailScraper         siamintershopproductdetail.ProductDetailScraper
+	ProductDetailResponseService siamintershopproductdetail.ResponseService
+	CategoryListScraper          siamintershopcategorylist.CategoryListScraper
+}
 
-	productDetailScraper siamintershopproductdetail.ProductDetailScraper,
-	productDetailResponseService siamintershopproductdetail.ResponseService,
-
-	categoryListScraper siamintershopcategorylist.CategoryListScraper,
-) *Scraper {
+func NewScraper(deps ScraperDependencies) *Scraper {
 	return &Scraper{
-		productSearchScraper,
-		productSearchResponseService,
-		productDetailScraper,
-		productDetailResponseService,
-		categoryListScraper,
+		productSearchScraper:         deps.ProductSearchScraper,
+		productSearchResponseService: deps.ProductSearchResponseService,
+		productDetailScraper:         deps.ProductDetailScraper,
+		productDetailResponseService: deps.ProductDetailResponseService,
+		categoryListScraper:          deps.CategoryListScraper,
 	}
 }
 

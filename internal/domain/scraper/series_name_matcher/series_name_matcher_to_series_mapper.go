@@ -11,10 +11,12 @@ type SeriesNameMatcherToSeriesMapper struct {
 	seriesNameMatcherToSeriesNameMapper SeriesNameMatcherToSeriesNameMapper
 }
 
-func NewSeriesNameMatcherToSeriesMapper(
-	seriesNameMatcherToSeriesNameMapper SeriesNameMatcherToSeriesNameMapper,
-) *SeriesNameMatcherToSeriesMapper {
-	return &SeriesNameMatcherToSeriesMapper{seriesNameMatcherToSeriesNameMapper}
+type SeriesNameMatcherToSeriesMapperDependencies struct {
+	SeriesNameMatcherToSeriesNameMapper SeriesNameMatcherToSeriesNameMapper
+}
+
+func NewSeriesNameMatcherToSeriesMapper(deps SeriesNameMatcherToSeriesMapperDependencies) *SeriesNameMatcherToSeriesMapper {
+	return &SeriesNameMatcherToSeriesMapper{seriesNameMatcherToSeriesNameMapper: deps.SeriesNameMatcherToSeriesNameMapper}
 }
 
 func (mapper SeriesNameMatcherToSeriesMapper) Map(nameMatcher model.SeriesNameMatcher, publisherId uuid.UUID) model.Series {

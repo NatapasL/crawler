@@ -11,8 +11,12 @@ type GetCategoryListApi struct {
 	request ApiRequest
 }
 
-func NewGetCategoryListApi(request ApiRequest) *GetCategoryListApi {
-	return &GetCategoryListApi{request}
+type GetCategoryListApiDependencies struct {
+	Request ApiRequest
+}
+
+func NewGetCategoryListApi(deps GetCategoryListApiDependencies) *GetCategoryListApi {
+	return &GetCategoryListApi{request: deps.Request}
 }
 
 func (gcl GetCategoryListApi) Request() ([]byte, error) {

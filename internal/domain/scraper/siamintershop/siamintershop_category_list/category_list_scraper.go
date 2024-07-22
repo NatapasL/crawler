@@ -4,8 +4,12 @@ type CategoryListScraper struct {
 	gateway GetCategoryListGateway
 }
 
-func NewCategoryListScraper(gateway GetCategoryListGateway) *CategoryListScraper {
-	return &CategoryListScraper{gateway}
+type CategoryListScraperDependencies struct {
+	Gateway GetCategoryListGateway
+}
+
+func NewCategoryListScraper(deps CategoryListScraperDependencies) *CategoryListScraper {
+	return &CategoryListScraper{gateway: deps.Gateway}
 }
 
 func (scraper CategoryListScraper) Scrape() ([]CategoryResponse, error) {

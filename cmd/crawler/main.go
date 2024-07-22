@@ -16,12 +16,12 @@ func main() {
 	}
 
 	repositoryModule := container.InitializeRepositoryModule(container.RepositoryModuleDependencies{DB: db})
-	seriesNameMatcherModule := container.InitializeSeriesNameMatcherModule(container.SeriesNameMatcherModuleDependencies{
-		RepositoryModule: repositoryModule,
-	})
-	siamintershopApiModule := container.InitializeSiamintershopApiModule(container.SiamintershopApiModuleDependency{})
+	seriesNameMatcherModule := container.InitializeSeriesNameMatcherModule(
+		container.SeriesNameMatcherModuleDependencies{
+			RepositoryModule: repositoryModule,
+		},
+	)
 	siamintershopModule := container.InitializeSiamintershopModule(container.SiamintershopModuleDependencies{
-		ApiModule:               siamintershopApiModule,
 		SeriesNameMatcherModule: seriesNameMatcherModule,
 	})
 

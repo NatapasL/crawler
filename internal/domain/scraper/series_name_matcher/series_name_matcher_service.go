@@ -13,12 +13,18 @@ type SeriesNameMatcherService struct {
 	seriesNameMatcherToSeriesMapper SeriesNameMatcherToSeriesMapper
 }
 
-func NewSeriesNameMatcherService(
-	seriesNameMatcherRepository seriesnamematcherrepository.SeriesNameMatcherRepository,
-	seriesRepository seriesnamematcherrepository.SeriesRepository,
-	seriesNameMatcherToSeriesMapper SeriesNameMatcherToSeriesMapper,
-) *SeriesNameMatcherService {
-	return &SeriesNameMatcherService{seriesNameMatcherRepository, seriesRepository, seriesNameMatcherToSeriesMapper}
+type SeriesNameMatcherServiceDependencies struct {
+	SeriesNameMatcherRepository     seriesnamematcherrepository.SeriesNameMatcherRepository
+	SeriesRepository                seriesnamematcherrepository.SeriesRepository
+	SeriesNameMatcherToSeriesMapper SeriesNameMatcherToSeriesMapper
+}
+
+func NewSeriesNameMatcherService(deps SeriesNameMatcherServiceDependencies) *SeriesNameMatcherService {
+	return &SeriesNameMatcherService{
+		seriesNameMatcherRepository:     deps.SeriesNameMatcherRepository,
+		seriesRepository:                deps.SeriesRepository,
+		seriesNameMatcherToSeriesMapper: deps.SeriesNameMatcherToSeriesMapper,
+	}
 }
 
 func (service SeriesNameMatcherService) CreateIfNotExists(nameMatcher model.SeriesNameMatcher, publisherId uuid.UUID) error {

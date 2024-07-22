@@ -1,11 +1,7 @@
 package container
 
 import (
-	"manga-crawler/internal/domain/scraper/namecleaner"
 	"manga-crawler/internal/domain/scraper/siamintershop"
-	siamintershopcategorylist "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_category_list"
-	siamintershopproductdetail "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_product_detail"
-	siamintershopproductsearch "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_product_search"
 )
 
 type SiamintershopModule struct {
@@ -13,39 +9,35 @@ type SiamintershopModule struct {
 }
 
 type SiamintershopModuleDependencies struct {
-	ApiModule               SiamintershopApiModule
 	SeriesNameMatcherModule SeriesNameMatcherModule
 }
 
 func InitializeSiamintershopModule(deps SiamintershopModuleDependencies) SiamintershopModule {
-	regexpPattern := namecleaner.NewRegexpPattern(siamintershop.GetNameCleanerPattern())
-	nameCleaner := namecleaner.NewNameCleaner(regexpPattern)
-
-	// product search
-	productSearchScraper := siamintershopproductsearch.NewProductSearchScraper(deps.ApiModule.ProductSearchApi)
-	productSearchResponseService := siamintershopproductsearch.NewResponseService(
-		*nameCleaner,
-		*deps.SeriesNameMatcherModule.SeriesNameMatcherService,
+	apiModule := initializeSiamintershopApiModule(siamintershopApiModuleDependency{})
+	nameCleanerModule := initializeSiamintershopNameCleanerModule(
+		siamintershopNameCleanerDependencies{Patterns: siamintershop.GetNameCleanerPattern()},
 	)
+	productSearchModule := initializeSiamintershopProductSearchModule(siamintershopProductSearchModuleDependencies{
+		ApiModule:               apiModule,
+		NameCleanerModule:       nameCleanerModule,
+		SeriesNameMatcherModule: deps.SeriesNameMatcherModule,
+	})
+	productDetailModule := initializeSiamintershopProductDetailModule(siamintershopProductDetailDependencies{
+		ApiModule:               apiModule,
+		NameCleanerModule:       nameCleanerModule,
+		SeriesNameMatcherModule: deps.SeriesNameMatcherModule,
+	})
+	categoryListModule := initializeSiamintershopCategoryListModule(SiamintershopCategoryListModuleDependencies{
+		ApiModule: apiModule,
+	})
 
-	// product detail
-	productDetailScraper := siamintershopproductdetail.NewProductDetailScraper(deps.ApiModule.GetProductDetailApi)
-	productDetailResponseService := siamintershopproductdetail.NewResponseService(
-		*nameCleaner,
-		*deps.SeriesNameMatcherModule.SeriesNameMatcherService,
-	)
-
-	// category list
-	categoryListScraper := siamintershopcategorylist.NewCategoryListScraper(deps.ApiModule.GetCategoryListApi)
-
-	siamintershopScraper := siamintershop.NewScraper(
-		*productSearchScraper,
-		*productSearchResponseService,
-		*productDetailScraper,
-		*productDetailResponseService,
-		*categoryListScraper,
-	)
-
+	siamintershopScraper := siamintershop.NewScraper(siamintershop.ScraperDependencies{
+		ProductSearchScraper:         *productSearchModule.ProductSearchScraper,
+		ProductSearchResponseService: *productSearchModule.ResponseService,
+		ProductDetailScraper:         *productDetailModule.ProductDetailScraper,
+		ProductDetailResponseService: *productDetailModule.ResponseService,
+		CategoryListScraper:          *categoryListModule.CategoryListScraper,
+	})
 	return SiamintershopModule{
 		Scraper: siamintershopScraper,
 	}

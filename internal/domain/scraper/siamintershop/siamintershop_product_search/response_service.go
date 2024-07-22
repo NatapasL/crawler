@@ -13,11 +13,13 @@ type ResponseService struct {
 	seriesNameMatcherService seriesnamematcher.SeriesNameMatcherService
 }
 
-func NewResponseService(
-	nameCleaner namecleaner.NameCleaner,
-	seriesNameMatcherService seriesnamematcher.SeriesNameMatcherService,
-) *ResponseService {
-	return &ResponseService{nameCleaner, seriesNameMatcherService}
+type ResponseServiceDependencies struct {
+	NameCleaner              namecleaner.NameCleaner
+	SeriesNameMatcherService seriesnamematcher.SeriesNameMatcherService
+}
+
+func NewResponseService(deps ResponseServiceDependencies) *ResponseService {
+	return &ResponseService{nameCleaner: deps.NameCleaner, seriesNameMatcherService: deps.SeriesNameMatcherService}
 }
 
 func (service ResponseService) AddSeriesNameMatcherIfNotExists(products []ProductSearchResponseProduct) []error {
