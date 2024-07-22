@@ -1,4 +1,4 @@
-package seriesnamematcherrepository
+package repository
 
 import (
 	"manga-crawler/internal/infrastructure/model"

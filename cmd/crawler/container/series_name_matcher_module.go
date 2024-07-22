@@ -1,7 +1,7 @@
 package container
 
 import (
-	seriesnamematcher "manga-crawler/internal/domain/scraper/series_name_matcher"
+	"manga-crawler/internal/domain/scraper/seriesnamematcher"
 )
 
 type SeriesNameMatcherModule struct {
@@ -16,14 +16,18 @@ type SeriesNameMatcherModuleDependencies struct {
 
 func InitializeSeriesNameMatcherModule(deps SeriesNameMatcherModuleDependencies) SeriesNameMatcherModule {
 	seriesNameMatcherToSeriesNameMapper := seriesnamematcher.NewSeriesNameMatcherToSeriesNameMapper()
-	seriesNameMatcherToSeriesMapper := seriesnamematcher.NewSeriesNameMatcherToSeriesMapper(seriesnamematcher.SeriesNameMatcherToSeriesMapperDependencies{
-		SeriesNameMatcherToSeriesNameMapper: *seriesNameMatcherToSeriesNameMapper,
-	})
-	seriesNameMatcherService := seriesnamematcher.NewSeriesNameMatcherService(seriesnamematcher.SeriesNameMatcherServiceDependencies{
-		SeriesNameMatcherRepository:     deps.RepositoryModule.SeriesNameMatcherRepository,
-		SeriesRepository:                deps.RepositoryModule.SeriesRepository,
-		SeriesNameMatcherToSeriesMapper: *seriesNameMatcherToSeriesMapper,
-	})
+	seriesNameMatcherToSeriesMapper := seriesnamematcher.NewSeriesNameMatcherToSeriesMapper(
+		seriesnamematcher.SeriesNameMatcherToSeriesMapperDependencies{
+			SeriesNameMatcherToSeriesNameMapper: *seriesNameMatcherToSeriesNameMapper,
+		},
+	)
+	seriesNameMatcherService := seriesnamematcher.NewSeriesNameMatcherService(
+		seriesnamematcher.SeriesNameMatcherServiceDependencies{
+			SeriesNameMatcherRepository:     deps.RepositoryModule.SeriesNameMatcherRepository,
+			SeriesRepository:                deps.RepositoryModule.SeriesRepository,
+			SeriesNameMatcherToSeriesMapper: *seriesNameMatcherToSeriesMapper,
+		},
+	)
 
 	return SeriesNameMatcherModule{
 		SeriesNameMatcherToSeriesNameMapper: seriesNameMatcherToSeriesNameMapper,

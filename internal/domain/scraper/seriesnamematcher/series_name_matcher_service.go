@@ -1,21 +1,21 @@
 package seriesnamematcher
 
 import (
-	seriesnamematcherrepository "manga-crawler/internal/domain/scraper/series_name_matcher/series_name_matcher_repository"
+	"manga-crawler/internal/domain/scraper/seriesnamematcher/repository"
 	"manga-crawler/internal/infrastructure/model"
 
 	"github.com/google/uuid"
 )
 
 type SeriesNameMatcherService struct {
-	seriesNameMatcherRepository     seriesnamematcherrepository.SeriesNameMatcherRepository
-	seriesRepository                seriesnamematcherrepository.SeriesRepository
+	seriesNameMatcherRepository     repository.SeriesNameMatcherRepository
+	seriesRepository                repository.SeriesRepository
 	seriesNameMatcherToSeriesMapper SeriesNameMatcherToSeriesMapper
 }
 
 type SeriesNameMatcherServiceDependencies struct {
-	SeriesNameMatcherRepository     seriesnamematcherrepository.SeriesNameMatcherRepository
-	SeriesRepository                seriesnamematcherrepository.SeriesRepository
+	SeriesNameMatcherRepository     repository.SeriesNameMatcherRepository
+	SeriesRepository                repository.SeriesRepository
 	SeriesNameMatcherToSeriesMapper SeriesNameMatcherToSeriesMapper
 }
 
@@ -27,7 +27,10 @@ func NewSeriesNameMatcherService(deps SeriesNameMatcherServiceDependencies) *Ser
 	}
 }
 
-func (service SeriesNameMatcherService) CreateIfNotExists(nameMatcher model.SeriesNameMatcher, publisherId uuid.UUID) error {
+func (service SeriesNameMatcherService) CreateIfNotExists(
+	nameMatcher model.SeriesNameMatcher,
+	publisherId uuid.UUID,
+) error {
 	isExists := service.isExists(nameMatcher)
 
 	if isExists {

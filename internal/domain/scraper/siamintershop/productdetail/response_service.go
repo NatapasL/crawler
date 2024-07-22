@@ -2,7 +2,7 @@ package productdetail
 
 import (
 	"manga-crawler/internal/domain/scraper/namecleaner"
-	seriesnamematcher "manga-crawler/internal/domain/scraper/series_name_matcher"
+	"manga-crawler/internal/domain/scraper/seriesnamematcher"
 	"manga-crawler/internal/infrastructure/model"
 
 	"github.com/google/uuid"
