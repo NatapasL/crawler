@@ -1,4 +1,4 @@
-package siamintershopgapi
+package siamintershop
 
 import (
 	"encoding/json"

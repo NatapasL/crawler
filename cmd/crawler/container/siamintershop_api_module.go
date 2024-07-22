@@ -1,6 +1,6 @@
 package container
 
-import siamintershopgapi "manga-crawler/internal/infrastructure/api_gateway/siamintershop_api"
+import siamintershopgapi "manga-crawler/internal/infrastructure/api_gateway/siamintershop"
 
 type siamintershopApiModule struct {
 	ApiRequest          *siamintershopgapi.ApiRequest
