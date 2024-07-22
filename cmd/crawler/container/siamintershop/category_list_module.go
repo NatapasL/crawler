@@ -1,4 +1,4 @@
-package container
+package siamintershop
 
 import "manga-crawler/internal/domain/scraper/siamintershop/categorylist"
 

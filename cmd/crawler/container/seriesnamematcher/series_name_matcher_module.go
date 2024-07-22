@@ -1,6 +1,7 @@
-package container
+package seriesnamematcher
 
 import (
+	"manga-crawler/cmd/crawler/container"
 	"manga-crawler/internal/domain/scraper/seriesnamematcher"
 )
 
@@ -11,7 +12,7 @@ type SeriesNameMatcherModule struct {
 }
 
 type SeriesNameMatcherModuleDependencies struct {
-	RepositoryModule RepositoryModule
+	RepositoryModule container.RepositoryModule
 }
 
 func InitializeSeriesNameMatcherModule(deps SeriesNameMatcherModuleDependencies) SeriesNameMatcherModule {

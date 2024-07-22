@@ -1,6 +1,9 @@
-package container
+package siamintershop
 
-import "manga-crawler/internal/domain/scraper/siamintershop/productdetail"
+import (
+	"manga-crawler/cmd/crawler/container/seriesnamematcher"
+	"manga-crawler/internal/domain/scraper/siamintershop/productdetail"
+)
 
 type siamintershopProductDetailModule struct {
 	ProductDetailScraper *productdetail.ProductDetailScraper
@@ -10,7 +13,7 @@ type siamintershopProductDetailModule struct {
 type siamintershopProductDetailDependencies struct {
 	ApiModule               siamintershopApiModule
 	NameCleanerModule       siamintershopNameCleanerModule
-	SeriesNameMatcherModule SeriesNameMatcherModule
+	SeriesNameMatcherModule seriesnamematcher.SeriesNameMatcherModule
 }
 
 func initializeSiamintershopProductDetailModule(
