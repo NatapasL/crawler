@@ -1,6 +1,7 @@
 package siamintershop
 
 import (
+	"fmt"
 	"log"
 	siamintershopcategorylist "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_category_list"
 	siamintershopproductdetail "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_product_detail"
@@ -35,8 +36,22 @@ func NewScraper(
 	}
 }
 
-func (scraper Scraper) ScrapeProductSearch() []siamintershopproductsearch.ProductSearchResponseProduct {
-	responseProducts, err := scraper.productSearchScraper.Scrape()
+func (scraper Scraper) ScrapeAll() {
+	categoryList := scraper.ScrapeCategoryList()
+
+	var responseProducts []siamintershopproductsearch.ProductSearchResponseProduct
+	for _, category := range categoryList {
+		responseProducts = scraper.ScrapeProductSearch(category.CategoryId)
+	}
+
+	for _, responseProduct := range responseProducts {
+		// scraper.ScrapeProductDetail(responseProduct.ProductId)
+		fmt.Println(responseProduct.ProductName)
+	}
+}
+
+func (scraper Scraper) ScrapeProductSearch(categoryId string) []siamintershopproductsearch.ProductSearchResponseProduct {
+	responseProducts, err := scraper.productSearchScraper.Scrape(categoryId)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -47,8 +62,8 @@ func (scraper Scraper) ScrapeProductSearch() []siamintershopproductsearch.Produc
 	return responseProducts
 }
 
-func (scraper Scraper) ScrapeProductDetail() *siamintershopproductdetail.ProductDetailResponse {
-	response, err := scraper.productDetailScraper.Scrape("11000408800022331")
+func (scraper Scraper) ScrapeProductDetail(productId string) *siamintershopproductdetail.ProductDetailResponse {
+	response, err := scraper.productDetailScraper.Scrape(productId)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -65,6 +80,8 @@ func (scraper Scraper) ScrapeCategoryList() []siamintershopcategorylist.Category
 		log.Println(err)
 		return nil
 	}
+
+	fmt.Printf("%+v", response)
 
 	return response
 }

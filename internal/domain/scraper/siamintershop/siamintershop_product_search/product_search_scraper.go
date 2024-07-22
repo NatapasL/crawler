@@ -10,12 +10,7 @@ type productSearchScraperIntervalConfig struct {
 	delay     time.Duration
 }
 
-type productSearchScraperConfig struct {
-	categoryId string
-}
-
 type ProductSearchScraper struct {
-	config         productSearchScraperConfig
 	intervalConfig productSearchScraperIntervalConfig
 	gateway        ProductSearchGateway
 }
@@ -23,9 +18,6 @@ type ProductSearchScraper struct {
 func NewProductSearchScraper(productSearchGateway ProductSearchGateway) *ProductSearchScraper {
 	return &ProductSearchScraper{
 		gateway: productSearchGateway,
-		config: productSearchScraperConfig{
-			categoryId: "654",
-		},
 		intervalConfig: productSearchScraperIntervalConfig{
 			chunkSize: 59,
 			delay:     1 * time.Second,
@@ -33,13 +25,13 @@ func NewProductSearchScraper(productSearchGateway ProductSearchGateway) *Product
 	}
 }
 
-func (pss ProductSearchScraper) Scrape() ([]ProductSearchResponseProduct, error) {
-	total, err := pss.getTotalProducts()
+func (pss ProductSearchScraper) Scrape(categoryId string) ([]ProductSearchResponseProduct, error) {
+	total, err := pss.getTotalProducts(categoryId)
 	if err != nil {
 		return nil, err
 	}
 
-	products, err := pss.iterateGetProducts(total)
+	products, err := pss.iterateGetProducts(total, categoryId)
 	if err != nil {
 		return nil, err
 	}
@@ -47,8 +39,8 @@ func (pss ProductSearchScraper) Scrape() ([]ProductSearchResponseProduct, error)
 	return products, nil
 }
 
-func (pss ProductSearchScraper) getTotalProducts() (int, error) {
-	response, err := pss.gateway.Request(pss.config.categoryId, 0, 1)
+func (pss ProductSearchScraper) getTotalProducts(categoryId string) (int, error) {
+	response, err := pss.gateway.Request(categoryId, 0, 1)
 
 	siamintershopResponse := NewProductSearchResponse(response)
 	if err != nil {
@@ -63,14 +55,14 @@ func (pss ProductSearchScraper) getTotalProducts() (int, error) {
 	return total, nil
 }
 
-func (pss ProductSearchScraper) iterateGetProducts(total int) ([]ProductSearchResponseProduct, error) {
+func (pss ProductSearchScraper) iterateGetProducts(total int, categoryId string) ([]ProductSearchResponseProduct, error) {
 	var products []ProductSearchResponseProduct
 	chunkSize := pss.intervalConfig.chunkSize
 
 	for i := 0; i*chunkSize < total; i++ {
 		time.Sleep(pss.intervalConfig.delay)
 
-		responseProducts, err := pss.getProducts(chunkSize, i*chunkSize)
+		responseProducts, err := pss.getProducts(categoryId, chunkSize, i*chunkSize)
 		if err != nil {
 			return nil, err
 		}
@@ -80,8 +72,8 @@ func (pss ProductSearchScraper) iterateGetProducts(total int) ([]ProductSearchRe
 	return products, nil
 }
 
-func (pss ProductSearchScraper) getProducts(limit int, offset int) ([]ProductSearchResponseProduct, error) {
-	response, err := pss.gateway.Request(pss.config.categoryId, offset, limit)
+func (pss ProductSearchScraper) getProducts(categoryId string, limit int, offset int) ([]ProductSearchResponseProduct, error) {
+	response, err := pss.gateway.Request(categoryId, offset, limit)
 
 	siamintershopResponse := NewProductSearchResponse(response)
 	if siamintershopResponse == nil {
