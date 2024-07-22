@@ -31,9 +31,9 @@ func (rp *RegexpPattern) sort() {
 }
 
 func (rp RegexpPattern) patternPoint(pattern string) int {
-	if strings.Contains(pattern, `^ `) || strings.Contains(pattern, ` $`) {
-		return 5
-	}
+	// if strings.Contains(pattern, `^ `) || strings.Contains(pattern, ` $`) {
+	// 	return 5
+	// }
 
 	if strings.Contains(pattern, `\[`) {
 		return 4
