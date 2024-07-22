@@ -1,9 +1,9 @@
 package container
 
-import siamintershopcategorylist "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_category_list"
+import "manga-crawler/internal/domain/scraper/siamintershop/categorylist"
 
 type SiamintershopCategoryListModule struct {
-	CategoryListScraper *siamintershopcategorylist.CategoryListScraper
+	CategoryListScraper *categorylist.CategoryListScraper
 }
 
 type SiamintershopCategoryListModuleDependencies struct {
@@ -13,8 +13,8 @@ type SiamintershopCategoryListModuleDependencies struct {
 func initializeSiamintershopCategoryListModule(
 	deps SiamintershopCategoryListModuleDependencies,
 ) SiamintershopCategoryListModule {
-	categoryListScraper := siamintershopcategorylist.NewCategoryListScraper(
-		siamintershopcategorylist.CategoryListScraperDependencies{
+	categoryListScraper := categorylist.NewCategoryListScraper(
+		categorylist.CategoryListScraperDependencies{
 			Gateway: deps.ApiModule.GetCategoryListApi,
 		},
 	)

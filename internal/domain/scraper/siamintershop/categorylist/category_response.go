@@ -1,4 +1,4 @@
-package siamintershopcategorylist
+package categorylist
 
 import "encoding/json"
 

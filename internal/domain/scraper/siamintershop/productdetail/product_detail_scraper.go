@@ -1,4 +1,4 @@
-package siamintershopproductdetail
+package productdetail
 
 type ProductDetailScraper struct {
 	gateway GetProductDetailGateway

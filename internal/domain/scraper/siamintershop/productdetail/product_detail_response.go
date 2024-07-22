@@ -1,4 +1,4 @@
-package siamintershopproductdetail
+package productdetail
 
 import "encoding/json"
 

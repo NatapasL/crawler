@@ -1,10 +1,10 @@
 package container
 
-import siamintershopproductdetail "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_product_detail"
+import "manga-crawler/internal/domain/scraper/siamintershop/productdetail"
 
 type siamintershopProductDetailModule struct {
-	ProductDetailScraper *siamintershopproductdetail.ProductDetailScraper
-	ResponseService      *siamintershopproductdetail.ResponseService
+	ProductDetailScraper *productdetail.ProductDetailScraper
+	ResponseService      *productdetail.ResponseService
 }
 
 type siamintershopProductDetailDependencies struct {
@@ -16,11 +16,11 @@ type siamintershopProductDetailDependencies struct {
 func initializeSiamintershopProductDetailModule(
 	deps siamintershopProductDetailDependencies,
 ) siamintershopProductDetailModule {
-	scraper := siamintershopproductdetail.NewProductDetailScraper(
-		siamintershopproductdetail.ProductDetailScraperDependencies{Gateway: deps.ApiModule.GetProductDetailApi},
+	scraper := productdetail.NewProductDetailScraper(
+		productdetail.ProductDetailScraperDependencies{Gateway: deps.ApiModule.GetProductDetailApi},
 	)
-	responseService := siamintershopproductdetail.NewResponseService(
-		siamintershopproductdetail.ResponseServiceDependencies{
+	responseService := productdetail.NewResponseService(
+		productdetail.ResponseServiceDependencies{
 			NameCleaner:              *deps.NameCleanerModule.NameCleaner,
 			SeriesNameMatcherService: *deps.SeriesNameMatcherModule.SeriesNameMatcherService,
 		},

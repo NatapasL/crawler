@@ -3,25 +3,25 @@ package siamintershop
 import (
 	"fmt"
 	"log"
-	siamintershopcategorylist "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_category_list"
-	siamintershopproductdetail "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_product_detail"
-	siamintershopproductsearch "manga-crawler/internal/domain/scraper/siamintershop/siamintershop_product_search"
+	"manga-crawler/internal/domain/scraper/siamintershop/categorylist"
+	"manga-crawler/internal/domain/scraper/siamintershop/productdetail"
+	"manga-crawler/internal/domain/scraper/siamintershop/productsearch"
 )
 
 type Scraper struct {
-	productSearchScraper         siamintershopproductsearch.ProductSearchScraper
-	productSearchResponseService siamintershopproductsearch.ResponseService
-	productDetailScraper         siamintershopproductdetail.ProductDetailScraper
-	productDetailResponseService siamintershopproductdetail.ResponseService
-	categoryListScraper          siamintershopcategorylist.CategoryListScraper
+	productSearchScraper         productsearch.ProductSearchScraper
+	productSearchResponseService productsearch.ResponseService
+	productDetailScraper         productdetail.ProductDetailScraper
+	productDetailResponseService productdetail.ResponseService
+	categoryListScraper          categorylist.CategoryListScraper
 }
 
 type ScraperDependencies struct {
-	ProductSearchScraper         siamintershopproductsearch.ProductSearchScraper
-	ProductSearchResponseService siamintershopproductsearch.ResponseService
-	ProductDetailScraper         siamintershopproductdetail.ProductDetailScraper
-	ProductDetailResponseService siamintershopproductdetail.ResponseService
-	CategoryListScraper          siamintershopcategorylist.CategoryListScraper
+	ProductSearchScraper         productsearch.ProductSearchScraper
+	ProductSearchResponseService productsearch.ResponseService
+	ProductDetailScraper         productdetail.ProductDetailScraper
+	ProductDetailResponseService productdetail.ResponseService
+	CategoryListScraper          categorylist.CategoryListScraper
 }
 
 func NewScraper(deps ScraperDependencies) *Scraper {
@@ -37,7 +37,7 @@ func NewScraper(deps ScraperDependencies) *Scraper {
 func (scraper Scraper) ScrapeAll() {
 	categoryList := scraper.ScrapeCategoryList()
 
-	var responseProducts []siamintershopproductsearch.ProductSearchResponseProduct
+	var responseProducts []productsearch.ProductSearchResponseProduct
 	for _, category := range categoryList {
 		responseProducts = scraper.ScrapeProductSearch(category.CategoryId)
 	}
@@ -48,7 +48,9 @@ func (scraper Scraper) ScrapeAll() {
 	}
 }
 
-func (scraper Scraper) ScrapeProductSearch(categoryId string) []siamintershopproductsearch.ProductSearchResponseProduct {
+func (scraper Scraper) ScrapeProductSearch(
+	categoryId string,
+) []productsearch.ProductSearchResponseProduct {
 	responseProducts, err := scraper.productSearchScraper.Scrape(categoryId)
 	if err != nil {
 		log.Println(err)
@@ -60,7 +62,7 @@ func (scraper Scraper) ScrapeProductSearch(categoryId string) []siamintershoppro
 	return responseProducts
 }
 
-func (scraper Scraper) ScrapeProductDetail(productId string) *siamintershopproductdetail.ProductDetailResponse {
+func (scraper Scraper) ScrapeProductDetail(productId string) *productdetail.ProductDetailResponse {
 	response, err := scraper.productDetailScraper.Scrape(productId)
 	if err != nil {
 		log.Println(err)
@@ -72,7 +74,7 @@ func (scraper Scraper) ScrapeProductDetail(productId string) *siamintershopprodu
 	return response
 }
 
-func (scraper Scraper) ScrapeCategoryList() []siamintershopcategorylist.CategoryResponse {
+func (scraper Scraper) ScrapeCategoryList() []categorylist.CategoryResponse {
 	response, err := scraper.categoryListScraper.Scrape()
 	if err != nil {
 		log.Println(err)

@@ -1,4 +1,4 @@
-package siamintershopcategorylist
+package categorylist
 
 type CategoryListScraper struct {
 	gateway GetCategoryListGateway

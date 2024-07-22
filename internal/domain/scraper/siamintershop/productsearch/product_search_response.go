@@ -1,4 +1,4 @@
-package siamintershopproductsearch
+package productsearch
 
 import (
 	"encoding/json"

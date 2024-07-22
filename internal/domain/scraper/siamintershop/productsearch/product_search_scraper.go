@@ -1,4 +1,4 @@
-package siamintershopproductsearch
+package productsearch
 
 import (
 	"strconv"
@@ -51,7 +51,10 @@ func (pss ProductSearchScraper) getTotalProducts(categoryId string) (int, error)
 	return total, nil
 }
 
-func (pss ProductSearchScraper) iterateGetProducts(total int, categoryId string) ([]ProductSearchResponseProduct, error) {
+func (pss ProductSearchScraper) iterateGetProducts(
+	total int,
+	categoryId string,
+) ([]ProductSearchResponseProduct, error) {
 	var products []ProductSearchResponseProduct
 	chunkSize := pss.intervalConfig.chunkSize
 
@@ -68,7 +71,11 @@ func (pss ProductSearchScraper) iterateGetProducts(total int, categoryId string)
 	return products, nil
 }
 
-func (pss ProductSearchScraper) getProducts(categoryId string, limit int, offset int) ([]ProductSearchResponseProduct, error) {
+func (pss ProductSearchScraper) getProducts(
+	categoryId string,
+	limit int,
+	offset int,
+) ([]ProductSearchResponseProduct, error) {
 	response, err := pss.gateway.Request(categoryId, offset, limit)
 
 	siamintershopResponse := NewProductSearchResponse(response)

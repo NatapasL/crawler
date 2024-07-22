@@ -1,4 +1,4 @@
-package siamintershopproductdetail
+package productdetail
 
 import (
 	"manga-crawler/internal/domain/scraper/namecleaner"
@@ -34,7 +34,9 @@ func (service ResponseService) AddSeriesNameMatcherIfNotExists(response ProductD
 	return nil
 }
 
-func (service ResponseService) mapResponseProductToSeriesNameMatcher(product ProductDetailResponse) model.SeriesNameMatcher {
+func (service ResponseService) mapResponseProductToSeriesNameMatcher(
+	product ProductDetailResponse,
+) model.SeriesNameMatcher {
 	return model.SeriesNameMatcher{
 		ID:   uuid.New(),
 		Name: service.nameCleaner.Clean(product.ProductName),
