@@ -26,17 +26,21 @@ type NewProductArgs struct {
 	Discounted  bool
 }
 
-func NewProduct(args NewProductArgs) Product {
+func NewProduct(args NewProductArgs) (*Product, error) {
+	productPrice, _ := newProductPrice(newProductPriceArgs{Price: args.Price, Discounted: args.Discounted})
 	product := Product{
 		id:          uuid.New(),
 		name:        args.Name,
 		wholesaleID: args.WholesaleID,
 		externalID:  args.ExternalID,
 		sourceUrl:   args.SourceUrl,
-		Price:       ProductPrice{price: args.Price, discounted: args.Discounted},
+		Price:       *productPrice,
+	}
+	if err := product.validate(); err != nil {
+		return nil, err
 	}
 
-	return product
+	return &product, nil
 }
 
 func (p Product) ID() uuid.UUID {
@@ -59,4 +63,8 @@ func (p Product) ToSeriesNameMatcher(nameCleaner namecleaner.NameCleaner) Series
 
 func (p *Product) AttachToSeries(series Series) {
 	p.seriesID = series.ID()
+}
+
+func (p Product) validate() error {
+	return nil
 }

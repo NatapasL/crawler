@@ -21,7 +21,7 @@ type SubProduct struct {
 	ProductFullUrl string `json:"product_full_url"`
 }
 
-func (sp SubProduct) ToProduct() productupdater.Product {
+func (sp SubProduct) ToProduct() (*productupdater.Product, error) {
 	wholesaleID, _ := uuid.Parse(siamintershop.SiamintershopID)
 
 	return productupdater.NewProduct(productupdater.NewProductArgs{
