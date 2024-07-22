@@ -2,7 +2,7 @@ package seriesnamematcher
 
 import (
 	"manga-crawler/cmd/crawler/container"
-	"manga-crawler/internal/domain/scraper/seriesnamematcher"
+	"manga-crawler/internal/domain/seriesnamematcher"
 )
 
 type SeriesNameMatcherModule struct {
