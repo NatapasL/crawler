@@ -3,6 +3,7 @@ package siamintershop
 import (
 	"encoding/json"
 	"manga-crawler/config"
+	"manga-crawler/internal/domain/scraper/siamintershop/productsearch"
 	"net/http"
 )
 
@@ -27,7 +28,11 @@ func NewProductSearchApi(deps ProductSearchApiDependencies) *ProductSearchApi {
 	return &ProductSearchApi{request: deps.Request}
 }
 
-func (psf ProductSearchApi) Request(categoryId string, offset int, limit int) ([]byte, error) {
+func (psf ProductSearchApi) Request(
+	categoryId string,
+	offset int,
+	limit int,
+) (*productsearch.ProductSearchResponse, error) {
 	filter := psf.buildFilter(categoryId, offset, limit)
 	req, err := psf.buildRequest(filter)
 	if err != nil {
@@ -39,7 +44,9 @@ func (psf ProductSearchApi) Request(categoryId string, offset int, limit int) ([
 		return nil, err
 	}
 
-	return response, nil
+	productSearchResponse := psf.convertToProductSearchResponse(response)
+
+	return productSearchResponse, nil
 }
 
 func (psf ProductSearchApi) buildFilter(categoryId string, offset int, limit int) productSearchFilter {
@@ -84,4 +91,11 @@ func (ProductSearchApi) buildUrl(filter productSearchFilter) (string, error) {
 	req.URL.RawQuery = q.Encode()
 
 	return req.URL.String(), nil
+}
+
+func (ProductSearchApi) convertToProductSearchResponse(data []byte) *productsearch.ProductSearchResponse {
+	var response productsearch.ProductSearchResponse
+	json.Unmarshal(data, &response)
+
+	return &response
 }

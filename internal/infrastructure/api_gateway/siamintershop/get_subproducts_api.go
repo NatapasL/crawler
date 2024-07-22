@@ -23,19 +23,17 @@ func NewGetSubproductsApi(deps GetSubproductsApiDependencies) *GetSubproductsApi
 }
 
 func (gsp GetSubproductsApi) Request(productId string) ([]subproduct.SubProduct, error) {
-	var emptySubproducts []subproduct.SubProduct
-
 	req, err := gsp.buildRequest(productId)
 	if err != nil {
-		return emptySubproducts, err
+		return nil, err
 	}
 
 	response, err := gsp.request.Request(req)
 	if err != nil {
-		return emptySubproducts, err
+		return nil, err
 	}
 
-	subProducts := gsp.convertResponseToSubProducts(response)
+	subProducts := gsp.convertToSubproducts(response)
 
 	return subProducts, nil
 }
@@ -53,7 +51,7 @@ func (GetSubproductsApi) buildRequest(productId string) (*http.Request, error) {
 	return req, nil
 }
 
-func (GetSubproductsApi) convertResponseToSubProducts(data []byte) []subproduct.SubProduct {
+func (GetSubproductsApi) convertToSubproducts(data []byte) []subproduct.SubProduct {
 	var subProducts []subproduct.SubProduct
 	json.Unmarshal(data, &subProducts)
 

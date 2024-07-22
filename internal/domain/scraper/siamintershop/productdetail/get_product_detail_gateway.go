@@ -1,5 +1,5 @@
 package productdetail
 
 type GetProductDetailGateway interface {
-	Request(productId string) ([]byte, error)
+	Request(productId string) (*ProductDetail, error)
 }

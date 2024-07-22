@@ -12,11 +12,11 @@ func NewProductDetailScraper(deps ProductDetailScraperDependencies) *ProductDeta
 	return &ProductDetailScraper{gateway: deps.Gateway}
 }
 
-func (pds ProductDetailScraper) Scrape(productId string) (*ProductDetailResponse, error) {
-	response, err := pds.gateway.Request(productId)
+func (pds ProductDetailScraper) Scrape(productId string) (*ProductDetail, error) {
+	productDetail, err := pds.gateway.Request(productId)
 	if err != nil {
 		return nil, err
 	}
 
-	return NewProductDetailResponse(response), nil
+	return productDetail, nil
 }

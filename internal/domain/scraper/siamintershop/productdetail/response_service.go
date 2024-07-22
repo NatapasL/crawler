@@ -22,7 +22,7 @@ func NewResponseService(deps ResponseServiceDependencies) *ResponseService {
 	return &ResponseService{nameCleaner: deps.NameCleaner, seriesNameMatcherService: deps.SeriesNameMatcherService}
 }
 
-func (service ResponseService) AddSeriesNameMatcherIfNotExists(response ProductDetailResponse) error {
+func (service ResponseService) AddSeriesNameMatcherIfNotExists(response ProductDetail) error {
 	nameMatcher := service.mapResponseProductToSeriesNameMatcher(response)
 
 	publisherId, _ := uuid.FromBytes([]byte("01eb250e-57ad-4be1-8906-dc1527de6238"))
@@ -35,7 +35,7 @@ func (service ResponseService) AddSeriesNameMatcherIfNotExists(response ProductD
 }
 
 func (service ResponseService) mapResponseProductToSeriesNameMatcher(
-	product ProductDetailResponse,
+	product ProductDetail,
 ) model.SeriesNameMatcher {
 	return model.SeriesNameMatcher{
 		ID:   uuid.New(),

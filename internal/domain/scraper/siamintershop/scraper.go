@@ -62,7 +62,7 @@ func (scraper Scraper) ScrapeProductSearch(
 	return responseProducts
 }
 
-func (scraper Scraper) ScrapeProductDetail(productId string) *productdetail.ProductDetailResponse {
+func (scraper Scraper) ScrapeProductDetail(productId string) *productdetail.ProductDetail {
 	response, err := scraper.productDetailScraper.Scrape(productId)
 	if err != nil {
 		log.Println(err)
@@ -74,7 +74,7 @@ func (scraper Scraper) ScrapeProductDetail(productId string) *productdetail.Prod
 	return response
 }
 
-func (scraper Scraper) ScrapeCategoryList() []categorylist.CategoryResponse {
+func (scraper Scraper) ScrapeCategoryList() []categorylist.Category {
 	response, err := scraper.categoryListScraper.Scrape()
 	if err != nil {
 		log.Println(err)

@@ -1,7 +1,9 @@
 package siamintershop
 
 import (
+	"encoding/json"
 	"manga-crawler/config"
+	"manga-crawler/internal/domain/scraper/siamintershop/categorylist"
 	"net/http"
 )
 
@@ -19,9 +21,7 @@ func NewGetCategoryListApi(deps GetCategoryListApiDependencies) *GetCategoryList
 	return &GetCategoryListApi{request: deps.Request}
 }
 
-func (gcl GetCategoryListApi) Request() ([]byte, error) {
-	var emptyByte []byte
-
+func (gcl GetCategoryListApi) Request() ([]categorylist.Category, error) {
 	req, err := http.NewRequest("GET", CategoryListBaseUrl, nil)
 	if err != nil {
 		return nil, err
@@ -31,8 +31,17 @@ func (gcl GetCategoryListApi) Request() ([]byte, error) {
 
 	response, err := gcl.request.Request(req)
 	if err != nil {
-		return emptyByte, err
+		return nil, err
 	}
 
-	return response, nil
+	catories := gcl.convertToCategoryList(response)
+
+	return catories, nil
+}
+
+func (GetCategoryListApi) convertToCategoryList(data []byte) []categorylist.Category {
+	var categories []categorylist.Category
+	json.Unmarshal(data, &categories)
+
+	return categories
 }

@@ -37,13 +37,11 @@ func (pss ProductSearchScraper) Scrape(categoryId string) ([]ProductSearchRespon
 
 func (pss ProductSearchScraper) getTotalProducts(categoryId string) (int, error) {
 	response, err := pss.gateway.Request(categoryId, 0, 1)
-
-	siamintershopResponse := NewProductSearchResponse(response)
 	if err != nil {
 		return 0, err
 	}
 
-	total, err := strconv.Atoi(siamintershopResponse.Total)
+	total, err := strconv.Atoi(response.Total)
 	if err != nil {
 		return 0, err
 	}
@@ -77,11 +75,9 @@ func (pss ProductSearchScraper) getProducts(
 	offset int,
 ) ([]ProductSearchResponseProduct, error) {
 	response, err := pss.gateway.Request(categoryId, offset, limit)
-
-	siamintershopResponse := NewProductSearchResponse(response)
-	if siamintershopResponse == nil {
+	if err != nil {
 		return nil, err
 	}
 
-	return siamintershopResponse.Products, nil
+	return response.Products, nil
 }

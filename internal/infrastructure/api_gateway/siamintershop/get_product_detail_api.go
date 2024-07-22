@@ -1,8 +1,10 @@
 package siamintershop
 
 import (
+	"encoding/json"
 	"fmt"
 	"manga-crawler/config"
+	"manga-crawler/internal/domain/scraper/siamintershop/productdetail"
 	"net/http"
 )
 
@@ -20,20 +22,20 @@ func NewGetProductDetailApi(deps GetProductDetailApiDependencies) *GetProductDet
 	return &GetProductDetailApi{request: deps.Request}
 }
 
-func (pdf GetProductDetailApi) Request(productId string) ([]byte, error) {
-	var emptyByte []byte
-
+func (pdf GetProductDetailApi) Request(productId string) (*productdetail.ProductDetail, error) {
 	req, err := pdf.buildRequest(productId)
 	if err != nil {
-		return emptyByte, err
+		return nil, err
 	}
 
 	response, err := pdf.request.Request(req)
 	if err != nil {
-		return emptyByte, err
+		return nil, err
 	}
 
-	return response, nil
+	productDetail := pdf.convertToProductDetail(response)
+
+	return productDetail, nil
 }
 
 func (GetProductDetailApi) buildRequest(productId string) (*http.Request, error) {
@@ -47,4 +49,11 @@ func (GetProductDetailApi) buildRequest(productId string) (*http.Request, error)
 	req.Header.Set("User-Agent", config.GetConfig().Http.UserAgent)
 
 	return req, nil
+}
+
+func (GetProductDetailApi) convertToProductDetail(data []byte) *productdetail.ProductDetail {
+	var productDetail productdetail.ProductDetail
+	json.Unmarshal(data, &productDetail)
+
+	return &productDetail
 }
