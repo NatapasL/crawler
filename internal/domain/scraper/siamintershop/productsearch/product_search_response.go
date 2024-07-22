@@ -1,9 +1,5 @@
 package productsearch
 
-import (
-	"encoding/json"
-)
-
 type ProductSearchResponse struct {
 	Total    string                         `json:"total"`
 	Limit    string                         `json:"limit"`
@@ -14,11 +10,4 @@ type ProductSearchResponse struct {
 type ProductSearchResponseProduct struct {
 	ProductId   string `json:"product_id"`
 	ProductName string `json:"product_name"`
-}
-
-func NewProductSearchResponse(data []byte) *ProductSearchResponse {
-	var response ProductSearchResponse
-	json.Unmarshal(data, &response)
-
-	return &response
 }
