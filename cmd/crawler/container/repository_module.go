@@ -1,7 +1,7 @@
 package container
 
 import (
-	postgresrepository "manga-crawler/internal/infrastructure/repository/postgres_repository"
+	postgresrepository "manga-crawler/internal/infrastructure/repository/postgres"
 
 	"gorm.io/gorm"
 )

@@ -1,4 +1,4 @@
-package postgresrepository
+package postgres
 
 import (
 	"log"

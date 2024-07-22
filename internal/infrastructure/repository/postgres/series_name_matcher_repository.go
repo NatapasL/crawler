@@ -1,4 +1,4 @@
-package postgresrepository
+package postgres
 
 import (
 	"manga-crawler/internal/infrastructure/model"
