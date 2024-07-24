@@ -7,6 +7,7 @@ type siamintershopApiModule struct {
 	ProductSearchApi    *siamintershop.ProductSearchApi
 	GetProductDetailApi *siamintershop.GetProductDetailApi
 	GetCategoryListApi  *siamintershop.GetCategoryListApi
+	GetSubProductsApi   *siamintershop.GetSubproductsApi
 }
 
 type siamintershopApiModuleDependency struct{}
@@ -22,11 +23,15 @@ func initializeSiamintershopApiModule(deps siamintershopApiModuleDependency) sia
 	getCategoryListApi := siamintershop.NewGetCategoryListApi(
 		siamintershop.GetCategoryListApiDependencies{Request: apiRequest},
 	)
+	getSubProductsApi := siamintershop.NewGetSubproductsApi(
+		siamintershop.GetSubproductsApiDependencies{Request: apiRequest},
+	)
 
 	return siamintershopApiModule{
 		ApiRequest:          &apiRequest,
 		ProductSearchApi:    productSearchApi,
 		GetProductDetailApi: getProductDetailApi,
 		GetCategoryListApi:  getCategoryListApi,
+		GetSubProductsApi:   getSubProductsApi,
 	}
 }
