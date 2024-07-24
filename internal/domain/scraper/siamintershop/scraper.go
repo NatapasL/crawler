@@ -3,10 +3,13 @@ package siamintershop
 import (
 	"fmt"
 	"log"
+	"manga-crawler/internal/domain/catalogupdate/wholesale"
 	"manga-crawler/internal/domain/scraper/siamintershop/categorylist"
 	"manga-crawler/internal/domain/scraper/siamintershop/productdetail"
 	"manga-crawler/internal/domain/scraper/siamintershop/productsearch"
 )
+
+const SiamintershopID = "22e26f1c-a8b2-4728-ab6d-7045798afc1a"
 
 type Scraper struct {
 	productSearchScraper         productsearch.ProductSearchScraper
@@ -32,6 +35,10 @@ func NewScraper(deps ScraperDependencies) *Scraper {
 		productDetailResponseService: deps.ProductDetailResponseService,
 		categoryListScraper:          deps.CategoryListScraper,
 	}
+}
+
+func (scraper Scraper) Scrape() ([]wholesale.Product, error) {
+	return make([]wholesale.Product, 0), nil
 }
 
 func (scraper Scraper) ScrapeAll() {
