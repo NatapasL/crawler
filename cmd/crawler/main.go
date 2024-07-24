@@ -26,6 +26,5 @@ func main() {
 	siamintershopModule := siamintershop.InitializeSiamintershopModule(siamintershop.SiamintershopModuleDependencies{
 		SeriesNameMatcherModule: seriesNameMatcherModule,
 	})
-
-	siamintershopModule.Scraper.ScrapeAll()
+	log.Println(siamintershopModule)
 }

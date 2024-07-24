@@ -46,7 +46,7 @@ func (pd ProductDetail) ToProduct(
 ) (wholesale.Product, error) {
 	publisherId, _ := uuid.Parse("01eb250e-57ad-4be1-8906-dc1527de6238")
 	product, err := product.NewProduct(product.NewProductArgs{
-		Name:       pd.ProductId,
+		Name:       pd.ProductName,
 		ExternalID: pd.ProductId,
 		Price:      pd.ProductMaxPrice,
 		Discounted: pd.isDiscounted(),

@@ -1,5 +1,5 @@
 package wholesale
 
 type Scraper interface {
-	Scrape() ([]Product, error)
+	Scrape(next <-chan bool, product chan<- Product) error
 }
