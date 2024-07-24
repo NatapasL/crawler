@@ -1,6 +1,8 @@
 package postgres
 
 import (
+	"errors"
+	"manga-crawler/internal/domain/catalogupdate/series"
 	"manga-crawler/internal/infrastructure/model"
 
 	"github.com/google/uuid"
@@ -15,12 +17,22 @@ func NewSeriesNameMatcherRepository(db *gorm.DB) *SeriesNameMatcherRepository {
 	return &SeriesNameMatcherRepository{db}
 }
 
-func (repository SeriesNameMatcherRepository) FindByName(name string) []model.SeriesNameMatcher {
-	var seriesNameMatchers []model.SeriesNameMatcher
+func (repository SeriesNameMatcherRepository) FindByName(name string) (*series.SeriesNameMatcher, error) {
+	var seriesNameMatchers model.SeriesNameMatcher
+	err := repository.db.Distinct("series_id").Where("name = ?", name).First(&seriesNameMatchers).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
 
-	repository.db.Distinct("series_id").Where("name = ?", name).Find(&seriesNameMatchers)
+		return nil, err
+	}
 
-	return seriesNameMatchers
+	return series.ExistingSeriesNameMatcher(series.ExistingSeriesNameMatcherArgs{
+		ID:       seriesNameMatchers.ID,
+		Name:     seriesNameMatchers.Name,
+		SeriesID: seriesNameMatchers.SeriesID,
+	})
 }
 
 func (repository SeriesNameMatcherRepository) FindById(id uuid.UUID) (model.SeriesNameMatcher, error) {
