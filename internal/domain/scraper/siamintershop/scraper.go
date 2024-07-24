@@ -10,6 +10,8 @@ import (
 	"manga-crawler/internal/domain/scraper/siamintershop/categorylist"
 	"manga-crawler/internal/domain/scraper/siamintershop/productdetail"
 	"manga-crawler/internal/domain/scraper/siamintershop/productsearch"
+	"manga-crawler/internal/domain/scraper/siamintershop/subproduct"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -22,6 +24,7 @@ type Scraper struct {
 	productSearchScraper productsearch.ProductSearchScraper
 	productDetailScraper productdetail.ProductDetailScraper
 	categoryListScraper  categorylist.CategoryListScraper
+	subProductScraper    subproduct.SubProductScraper
 	nameCleaner          scraper.NameCleaner
 	seriesFinder         series.SeriesNameFinder
 }
@@ -30,6 +33,7 @@ type ScraperDependencies struct {
 	ProductSearchScraper productsearch.ProductSearchScraper
 	ProductDetailScraper productdetail.ProductDetailScraper
 	CategoryListScraper  categorylist.CategoryListScraper
+	SubProductScraper    subproduct.SubProductScraper
 	NameCleaner          scraper.NameCleaner
 	SeriesFinder         series.SeriesNameFinder
 }
@@ -41,26 +45,61 @@ func NewScraper(deps ScraperDependencies) *Scraper {
 		categoryListScraper:  deps.CategoryListScraper,
 		nameCleaner:          deps.NameCleaner,
 		seriesFinder:         deps.SeriesFinder,
+		subProductScraper:    deps.SubProductScraper,
 	}
 }
 
 func (scraper Scraper) Scrape(next <-chan bool, product chan<- wholesale.Product) error {
+	defer close(product)
+
 	categoryList := scraper.ScrapeCategoryList()
 
 	var errs []error
-	for _, category := range categoryList {
-		responseProducts := scraper.ScrapeProductSearch(category.CategoryId)
-		for _, responseProduct := range responseProducts {
-			<-next
-			p, err := responseProduct.ToProduct(scraper.seriesFinder, scraper.nameCleaner, sicPublisherID)
-			if err != nil {
-				errs = append(errs, err)
-				continue
+
+	func() {
+		for _, category := range categoryList {
+			responseProducts := scraper.ScrapeProductSearch(category.CategoryId)
+			for _, responseProduct := range responseProducts {
+				_, ok := <-next
+				if !ok {
+					return
+				}
+				p, err := responseProduct.ToProduct(scraper.seriesFinder, scraper.nameCleaner, sicPublisherID)
+				if err != nil {
+					errs = append(errs, err)
+					continue
+				}
+				product <- p
+
+				time.Sleep(time.Second * 1)
+				productDetail := scraper.ScrapeProductDetail(responseProduct.ProductId)
+				_, ok = <-next
+				if !ok {
+					return
+				}
+				p, err = productDetail.ToProduct(scraper.seriesFinder, scraper.nameCleaner, sicPublisherID)
+				if err != nil {
+					errs = append(errs, err)
+					continue
+				}
+				product <- p
+
+				subProducts := scraper.ScrapeSubProducts(responseProduct.ProductId)
+				for _, subProduct := range subProducts {
+					_, ok = <-next
+					if !ok {
+						return
+					}
+					p, err := subProduct.ToProduct(scraper.seriesFinder, scraper.nameCleaner, sicPublisherID)
+					if err != nil {
+						errs = append(errs, err)
+						continue
+					}
+					product <- p
+				}
 			}
-			product <- p
 		}
-	}
-	close(product)
+	}()
 
 	if len(errs) > 0 {
 		return errors.Join(errs...)
@@ -103,6 +142,12 @@ func (scraper Scraper) ScrapeCategoryList() []categorylist.Category {
 	return response
 }
 
-func (scraper Scraper) ScrapeProductSubproducts() {
+func (scraper Scraper) ScrapeSubProducts(productID string) []subproduct.SubProduct {
+	response, err := scraper.subProductScraper.Scrape(productID)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
 
+	return response
 }
