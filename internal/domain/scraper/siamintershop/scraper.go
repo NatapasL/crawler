@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"manga-crawler/internal/domain/catalogupdate/wholesale"
+	"manga-crawler/internal/domain/scraper"
 	"manga-crawler/internal/domain/scraper/siamintershop/categorylist"
 	"manga-crawler/internal/domain/scraper/siamintershop/productdetail"
 	"manga-crawler/internal/domain/scraper/siamintershop/productsearch"
@@ -12,25 +13,25 @@ import (
 const SiamintershopID = "22e26f1c-a8b2-4728-ab6d-7045798afc1a"
 
 type Scraper struct {
-	productSearchScraper         productsearch.ProductSearchScraper
-	productSearchResponseService productsearch.ResponseService
-	productDetailScraper         productdetail.ProductDetailScraper
-	categoryListScraper          categorylist.CategoryListScraper
+	productSearchScraper productsearch.ProductSearchScraper
+	productDetailScraper productdetail.ProductDetailScraper
+	categoryListScraper  categorylist.CategoryListScraper
+	namecleaner          scraper.NameCleaner
 }
 
 type ScraperDependencies struct {
-	ProductSearchScraper         productsearch.ProductSearchScraper
-	ProductSearchResponseService productsearch.ResponseService
-	ProductDetailScraper         productdetail.ProductDetailScraper
-	CategoryListScraper          categorylist.CategoryListScraper
+	ProductSearchScraper productsearch.ProductSearchScraper
+	ProductDetailScraper productdetail.ProductDetailScraper
+	CategoryListScraper  categorylist.CategoryListScraper
+	NameCleaner          scraper.NameCleaner
 }
 
 func NewScraper(deps ScraperDependencies) *Scraper {
 	return &Scraper{
-		productSearchScraper:         deps.ProductSearchScraper,
-		productSearchResponseService: deps.ProductSearchResponseService,
-		productDetailScraper:         deps.ProductDetailScraper,
-		categoryListScraper:          deps.CategoryListScraper,
+		productSearchScraper: deps.ProductSearchScraper,
+		productDetailScraper: deps.ProductDetailScraper,
+		categoryListScraper:  deps.CategoryListScraper,
+		namecleaner:          deps.NameCleaner,
 	}
 }
 
@@ -60,8 +61,6 @@ func (scraper Scraper) ScrapeProductSearch(
 		log.Println(err)
 		return nil
 	}
-
-	scraper.productSearchResponseService.AddSeriesNameMatcherIfNotExists(responseProducts)
 
 	return responseProducts
 }
