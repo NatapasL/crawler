@@ -15,7 +15,6 @@ type Scraper struct {
 	productSearchScraper         productsearch.ProductSearchScraper
 	productSearchResponseService productsearch.ResponseService
 	productDetailScraper         productdetail.ProductDetailScraper
-	productDetailResponseService productdetail.ResponseService
 	categoryListScraper          categorylist.CategoryListScraper
 }
 
@@ -23,7 +22,6 @@ type ScraperDependencies struct {
 	ProductSearchScraper         productsearch.ProductSearchScraper
 	ProductSearchResponseService productsearch.ResponseService
 	ProductDetailScraper         productdetail.ProductDetailScraper
-	ProductDetailResponseService productdetail.ResponseService
 	CategoryListScraper          categorylist.CategoryListScraper
 }
 
@@ -32,7 +30,6 @@ func NewScraper(deps ScraperDependencies) *Scraper {
 		productSearchScraper:         deps.ProductSearchScraper,
 		productSearchResponseService: deps.ProductSearchResponseService,
 		productDetailScraper:         deps.ProductDetailScraper,
-		productDetailResponseService: deps.ProductDetailResponseService,
 		categoryListScraper:          deps.CategoryListScraper,
 	}
 }
@@ -75,8 +72,6 @@ func (scraper Scraper) ScrapeProductDetail(productId string) *productdetail.Prod
 		log.Println(err)
 		return nil
 	}
-
-	scraper.productDetailResponseService.AddSeriesNameMatcherIfNotExists(*response)
 
 	return response
 }

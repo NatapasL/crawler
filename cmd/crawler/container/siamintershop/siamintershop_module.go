@@ -25,7 +25,6 @@ func InitializeSiamintershopModule(deps SiamintershopModuleDependencies) Siamint
 	})
 	productDetailModule := initializeSiamintershopProductDetailModule(siamintershopProductDetailDependencies{
 		ApiModule:               apiModule,
-		NameCleanerModule:       nameCleanerModule,
 		SeriesNameMatcherModule: deps.SeriesNameMatcherModule,
 	})
 	categoryListModule := initializeSiamintershopCategoryListModule(SiamintershopCategoryListModuleDependencies{
@@ -36,7 +35,6 @@ func InitializeSiamintershopModule(deps SiamintershopModuleDependencies) Siamint
 		ProductSearchScraper:         *productSearchModule.ProductSearchScraper,
 		ProductSearchResponseService: *productSearchModule.ResponseService,
 		ProductDetailScraper:         *productDetailModule.ProductDetailScraper,
-		ProductDetailResponseService: *productDetailModule.ResponseService,
 		CategoryListScraper:          *categoryListModule.CategoryListScraper,
 	})
 	return SiamintershopModule{
