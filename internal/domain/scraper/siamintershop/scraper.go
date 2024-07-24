@@ -16,7 +16,7 @@ type Scraper struct {
 	productSearchScraper productsearch.ProductSearchScraper
 	productDetailScraper productdetail.ProductDetailScraper
 	categoryListScraper  categorylist.CategoryListScraper
-	namecleaner          scraper.NameCleaner
+	nameCleaner          scraper.NameCleaner
 }
 
 type ScraperDependencies struct {
@@ -31,7 +31,7 @@ func NewScraper(deps ScraperDependencies) *Scraper {
 		productSearchScraper: deps.ProductSearchScraper,
 		productDetailScraper: deps.ProductDetailScraper,
 		categoryListScraper:  deps.CategoryListScraper,
-		namecleaner:          deps.NameCleaner,
+		nameCleaner:          deps.NameCleaner,
 	}
 }
 
