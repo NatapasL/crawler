@@ -39,7 +39,7 @@ classDiagram
       NewSeriesNameMatcher(Product)$ SeriesNameMatcher
     }
 
-    class `series.Product` {
+    class SeriesNameFinder {
       <<interface>>
     }
   }
@@ -69,12 +69,11 @@ classDiagram
   Series --> `SeriesNameMatcher`
   Wholesale --> `wholesale.Scraper`
   SeriesFinderService --> SeriesNameMatcher
-  Scraper --> SeriesFinderService
+  Scraper --> SeriesNameFinder
 
-
-  Product ..|> `series.Product`
   Scraper ..|> `wholesale.Scraper`
   Product ..|> `wholesale.Product`
+  SeriesFinderService ..|> SeriesNameFinder
 ```
 
 | namespace | in | out | \<I\> |

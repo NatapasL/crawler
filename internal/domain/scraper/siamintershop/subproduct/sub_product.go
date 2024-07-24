@@ -2,6 +2,7 @@ package subproduct
 
 import (
 	"manga-crawler/internal/domain/catalogupdate/product"
+	"manga-crawler/internal/domain/catalogupdate/series"
 	"manga-crawler/internal/domain/catalogupdate/wholesale"
 	"manga-crawler/internal/domain/scraper"
 
@@ -22,7 +23,10 @@ type SubProduct struct {
 	ProductFullUrl string `json:"product_full_url"`
 }
 
-func (sp SubProduct) ToProduct(seriesFinder scraper.SeriesFinder, nameCleaner scraper.NameCleaner) (wholesale.Product, error) {
+func (sp SubProduct) ToProduct(
+	seriesFinder series.SeriesNameFinder,
+	nameCleaner scraper.NameCleaner,
+) (wholesale.Product, error) {
 	publisherId, _ := uuid.Parse("01eb250e-57ad-4be1-8906-dc1527de6238")
 	series, err := seriesFinder.MatchOrCreateSeriesByName(nameCleaner.Clean(sp.ProductName), publisherId)
 	if err != nil {
