@@ -2,8 +2,6 @@ package main
 
 import (
 	"log"
-	"manga-crawler/cmd/crawler/container"
-	"manga-crawler/cmd/crawler/container/seriesnamematcher"
 	"manga-crawler/cmd/crawler/container/siamintershop"
 	"manga-crawler/config"
 	"manga-crawler/internal/infrastructure/database/postgres"
@@ -17,14 +15,6 @@ func main() {
 		return
 	}
 
-	repositoryModule := container.InitializeRepositoryModule(container.RepositoryModuleDependencies{DB: db})
-	seriesNameMatcherModule := seriesnamematcher.InitializeSeriesNameMatcherModule(
-		seriesnamematcher.SeriesNameMatcherModuleDependencies{
-			RepositoryModule: repositoryModule,
-		},
-	)
-	siamintershopModule := siamintershop.InitializeSiamintershopModule(siamintershop.SiamintershopModuleDependencies{
-		SeriesNameMatcherModule: seriesNameMatcherModule,
-	})
+	siamintershopModule := siamintershop.InitializeSiamintershopModule(siamintershop.SiamintershopModuleDependencies{})
 	log.Println(siamintershopModule)
 }
