@@ -14,7 +14,6 @@ type Product struct {
 
 type NewProductArgs struct {
 	Name       string
-	SeriesID   uuid.UUID
 	ExternalID string
 	Price      float64
 	Discounted bool
@@ -23,7 +22,6 @@ type NewProductArgs struct {
 func NewProduct(args NewProductArgs) (*Product, error) {
 	product := Product{
 		id:         uuid.New(),
-		seriesID:   args.SeriesID,
 		name:       args.Name,
 		externalID: args.ExternalID,
 		price:      args.Price,
@@ -39,6 +37,10 @@ func NewProduct(args NewProductArgs) (*Product, error) {
 
 func (p *Product) SetWholesaleID(wholesaleID uuid.UUID) {
 	p.wholesaleID = wholesaleID
+}
+
+func (p *Product) SetSeriesID(seriesID uuid.UUID) {
+	p.seriesID = seriesID
 }
 
 func (Product) validate() error {

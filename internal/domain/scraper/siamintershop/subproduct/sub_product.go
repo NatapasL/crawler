@@ -28,18 +28,23 @@ func (sp SubProduct) ToProduct(
 	nameCleaner scraper.NameCleaner,
 ) (wholesale.Product, error) {
 	publisherId, _ := uuid.Parse("01eb250e-57ad-4be1-8906-dc1527de6238")
+	product, err := product.NewProduct(product.NewProductArgs{
+		Name:       sp.ProductId,
+		ExternalID: sp.ProductId,
+		Price:      sp.ProductMaxPrice,
+		Discounted: sp.isDiscounted(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	series, err := seriesFinder.MatchOrCreateSeriesByName(nameCleaner.Clean(sp.ProductName), publisherId)
 	if err != nil {
 		return nil, err
 	}
 
-	return product.NewProduct(product.NewProductArgs{
-		Name:       sp.ProductId,
-		SeriesID:   series.ID(),
-		ExternalID: sp.ProductId,
-		Price:      sp.ProductMaxPrice,
-		Discounted: sp.isDiscounted(),
-	})
+	product.SetSeriesID(series.ID())
+	return product, nil
 }
 
 func (sp SubProduct) isDiscounted() bool {
