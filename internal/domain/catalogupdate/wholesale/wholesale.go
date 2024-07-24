@@ -8,6 +8,8 @@ type Wholesale struct {
 }
 
 func (wh *Wholesale) UpdateCatalog(s Scraper, next <-chan bool, productAdded chan<- bool) error {
+	defer close(productAdded)
+
 	productChannel := make(chan Product)
 	go func() {
 		for {
