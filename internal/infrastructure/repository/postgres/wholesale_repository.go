@@ -41,16 +41,14 @@ func (repository WholesaleRepository) Persist(ws wholesale.Wholesale) error {
 			SeriesID: product.SeriesID(),
 		})
 
-		for _, price := range product.Prices() {
-			savedPrices = append(savedPrices, model.ProductPrice{
-				ID:          price.ID(),
-				Price:       price.Price(),
-				Discounted:  price.Discounted(),
-				ProductID:   product.ID(),
-				ExternalID:  product.ExternalID(),
-				WholesaleID: ws.ID(),
-			})
-		}
+		savedPrices = append(savedPrices, model.ProductPrice{
+			ID:          product.PriceID(),
+			Price:       product.Price(),
+			Discounted:  product.Discounted(),
+			ProductID:   product.ID(),
+			ExternalID:  product.ExternalID(),
+			WholesaleID: ws.ID(),
+		})
 	}
 
 	err := repository.db.Transaction(func(tx *gorm.DB) error {

@@ -8,5 +8,7 @@ type Product interface {
 	Name() string
 	SeriesID() uuid.UUID
 	ExternalID() string
-	Prices() []ProductPrice
+	Price() float64
+	Discounted() bool
+	PriceID() uuid.UUID
 }

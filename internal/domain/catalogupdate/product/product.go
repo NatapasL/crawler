@@ -1,6 +1,8 @@
 package product
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+)
 
 type Product struct {
 	id          uuid.UUID
@@ -8,8 +10,7 @@ type Product struct {
 	seriesID    uuid.UUID
 	wholesaleID uuid.UUID
 	externalID  string
-	price       float64
-	discounted  bool
+	price       ProductPrice
 }
 
 type NewProductArgs struct {
@@ -20,14 +21,18 @@ type NewProductArgs struct {
 }
 
 func NewProduct(args NewProductArgs) (*Product, error) {
+	price, err := newProductPrice(newProductPriceArgs{price: args.Price, discounted: args.Discounted})
+	if err != nil {
+		return nil, err
+	}
+
 	product := Product{
 		id:         uuid.New(),
 		name:       args.Name,
 		externalID: args.ExternalID,
-		price:      args.Price,
-		discounted: args.Discounted,
+		price:      *price,
 	}
-	err := product.validate()
+	err = product.validate()
 	if err != nil {
 		return nil, err
 	}
@@ -45,4 +50,32 @@ func (p *Product) SetSeriesID(seriesID uuid.UUID) {
 
 func (Product) validate() error {
 	return nil
+}
+
+func (p Product) ID() uuid.UUID {
+	return p.id
+}
+
+func (p Product) Name() string {
+	return p.name
+}
+
+func (p Product) SeriesID() uuid.UUID {
+	return p.seriesID
+}
+
+func (p Product) ExternalID() string {
+	return p.externalID
+}
+
+func (p Product) Price() float64 {
+	return p.price.price
+}
+
+func (p Product) Discounted() bool {
+	return p.price.discounted
+}
+
+func (p Product) PriceID() uuid.UUID {
+	return p.price.id
 }
