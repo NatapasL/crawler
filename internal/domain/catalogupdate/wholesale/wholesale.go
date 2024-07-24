@@ -7,7 +7,25 @@ type Wholesale struct {
 	products []Product
 }
 
-func (wh *Wholesale) UpdateCatalog(s Scraper, next <-chan bool, productAdded chan<- bool) error {
+type ExistingWholesaleArgs struct {
+	ID uuid.UUID
+}
+
+func ExistingWholesale(args ExistingWholesaleArgs) (*Wholesale, error) {
+	ws := Wholesale{id: args.ID}
+	err := ws.validate()
+	if err != nil {
+		return nil, err
+	}
+
+	return &ws, nil
+}
+
+func (Wholesale) validate() error {
+	return nil
+}
+
+func (ws *Wholesale) UpdateCatalog(s Scraper, next <-chan bool, productAdded chan<- bool) error {
 	defer close(productAdded)
 
 	productChannel := make(chan Product)
@@ -18,8 +36,8 @@ func (wh *Wholesale) UpdateCatalog(s Scraper, next <-chan bool, productAdded cha
 				return
 			}
 
-			wh.clearProducts()
-			wh.addProduct(product)
+			ws.clearProducts()
+			ws.addProduct(product)
 			productAdded <- true
 		}
 	}()
@@ -28,15 +46,19 @@ func (wh *Wholesale) UpdateCatalog(s Scraper, next <-chan bool, productAdded cha
 	return err
 }
 
-func (wh *Wholesale) addProduct(p Product) {
-	p.SetWholesaleID(wh.id)
-	wh.products = append(wh.products, p)
+func (ws *Wholesale) addProduct(p Product) {
+	p.SetWholesaleID(ws.id)
+	ws.products = append(ws.products, p)
 }
 
-func (wh *Wholesale) clearProducts() {
-	wh.products = []Product{}
+func (ws *Wholesale) clearProducts() {
+	ws.products = []Product{}
 }
 
-func (wh Wholesale) ID() uuid.UUID {
-	return wh.id
+func (ws Wholesale) ID() uuid.UUID {
+	return ws.id
+}
+
+func (ws Wholesale) Products() []Product {
+	return ws.products
 }
