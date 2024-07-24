@@ -16,7 +16,7 @@ type SiamintershopModuleDependencies struct {
 func InitializeSiamintershopModule(deps SiamintershopModuleDependencies) SiamintershopModule {
 	apiModule := initializeSiamintershopApiModule(siamintershopApiModuleDependency{})
 	nameCleanerModule := initializeSiamintershopNameCleanerModule(
-		siamintershopNameCleanerDependencies{Patterns: siamintershop.GetNameCleanerPattern()},
+		siamintershopNameCleanerDependencies{Patterns: siamintershop.NameCleanerPattern},
 	)
 	productSearchModule := initializeSiamintershopProductSearchModule(siamintershopProductSearchModuleDependencies{
 		ApiModule:               apiModule,
