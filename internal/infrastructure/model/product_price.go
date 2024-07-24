@@ -7,14 +7,13 @@ import (
 )
 
 type ProductPrice struct {
-	ID             uuid.UUID `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
-	ProductID      uuid.UUID `gorm:"type:uuid"`
-	WholesaleID    uuid.UUID `gorm:"type:uuid"`
-	Price          float64
-	EffectiveStart time.Time
-	EffectiveEnd   time.Time
-	SourceUrl      string
-	Discounted     bool
+	ID          uuid.UUID `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	ProductID   uuid.UUID `gorm:"type:uuid"`
+	WholesaleID uuid.UUID `gorm:"type:uuid"`
+	Price       float64
+	Discounted  bool
+	SourceUrl   string
+	ExternalID  string
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
