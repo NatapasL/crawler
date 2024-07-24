@@ -26,8 +26,8 @@ type SubProduct struct {
 func (sp SubProduct) ToProduct(
 	seriesFinder series.SeriesNameFinder,
 	nameCleaner scraper.NameCleaner,
+	publisherID uuid.UUID,
 ) (wholesale.Product, error) {
-	publisherId, _ := uuid.Parse("01eb250e-57ad-4be1-8906-dc1527de6238")
 	product, err := product.NewProduct(product.NewProductArgs{
 		Name:       sp.ProductName,
 		ExternalID: sp.ProductId,
@@ -38,7 +38,7 @@ func (sp SubProduct) ToProduct(
 		return nil, err
 	}
 
-	series, err := seriesFinder.MatchOrCreateSeriesByName(nameCleaner.Clean(sp.ProductName), publisherId)
+	series, err := seriesFinder.MatchOrCreateSeriesByName(nameCleaner.Clean(sp.ProductName), publisherID)
 	if err != nil {
 		return nil, err
 	}
