@@ -2,27 +2,25 @@ package scraper
 
 import (
 	"fmt"
-
-	"github.com/google/uuid"
 )
 
 type ScraperFactory struct {
-	scrapers map[uuid.UUID]Scraper
+	scrapers map[string]Scraper
 }
 
 func NewScraperFactory() *ScraperFactory {
-	return &ScraperFactory{scrapers: make(map[uuid.UUID]Scraper)}
+	return &ScraperFactory{scrapers: make(map[string]Scraper)}
 }
 
-func (sf *ScraperFactory) Register(wholesaleID uuid.UUID, scraper Scraper) {
-	sf.scrapers[wholesaleID] = scraper
+func (sf *ScraperFactory) Register(key string, scraper Scraper) {
+	sf.scrapers[key] = scraper
 }
 
-func (sf ScraperFactory) GetScraper(wholesaleID uuid.UUID) (Scraper, error) {
-	scraper := sf.scrapers[wholesaleID]
+func (sf ScraperFactory) GetScraper(key string) (Scraper, error) {
+	scraper := sf.scrapers[key]
 	if scraper != nil {
 		return scraper, nil
 	}
 
-	return nil, fmt.Errorf("scraper for wholesale %s not registered", wholesaleID.String())
+	return nil, fmt.Errorf("scraper for key '%s' not registered", key)
 }
