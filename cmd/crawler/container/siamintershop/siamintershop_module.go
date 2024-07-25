@@ -1,14 +1,18 @@
 package siamintershop
 
 import (
+	"manga-crawler/internal/domain/catalogupdate/series"
 	"manga-crawler/internal/domain/scraper/siamintershop"
 )
 
 type SiamintershopModule struct {
-	Scraper *siamintershop.Scraper
+	Scraper     *siamintershop.Scraper
+	WholesaleID string
 }
 
-type SiamintershopModuleDependencies struct{}
+type SiamintershopModuleDependencies struct {
+	SeriesFinder series.SeriesFinderService
+}
 
 func InitializeSiamintershopModule(deps SiamintershopModuleDependencies) SiamintershopModule {
 	apiModule := initializeSiamintershopApiModule(siamintershopApiModuleDependency{})
@@ -34,8 +38,10 @@ func InitializeSiamintershopModule(deps SiamintershopModuleDependencies) Siamint
 		CategoryListScraper:  *categoryListModule.CategoryListScraper,
 		NameCleaner:          nameCleanerModule.NameCleaner,
 		SubProductScraper:    *subProductModule.SubProductScraper,
+		SeriesFinder:         deps.SeriesFinder,
 	})
 	return SiamintershopModule{
-		Scraper: siamintershopScraper,
+		Scraper:     siamintershopScraper,
+		WholesaleID: siamintershop.SiamintershopID,
 	}
 }

@@ -1,7 +1,9 @@
 package scraper
 
-import "manga-crawler/internal/domain/catalogupdate/wholesale"
+import (
+	"manga-crawler/internal/domain/catalogupdate/product"
+)
 
 type Scraper interface {
-	Scrape(next <-chan bool, product chan<- wholesale.Product) error
+	Scrape(chan<- product.Product) error
 }

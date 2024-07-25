@@ -2,9 +2,6 @@ package subproduct
 
 import (
 	"manga-crawler/internal/domain/catalogupdate/product"
-	"manga-crawler/internal/domain/catalogupdate/series"
-	"manga-crawler/internal/domain/catalogupdate/wholesale"
-	"manga-crawler/internal/domain/scraper"
 
 	"github.com/google/uuid"
 )
@@ -23,28 +20,14 @@ type SubProduct struct {
 	ProductFullUrl string `json:"product_full_url"`
 }
 
-func (sp SubProduct) ToProduct(
-	seriesFinder series.SeriesNameFinder,
-	nameCleaner scraper.NameCleaner,
-	publisherID uuid.UUID,
-) (wholesale.Product, error) {
-	product, err := product.NewProduct(product.NewProductArgs{
-		Name:       sp.ProductName,
-		ExternalID: sp.ProductId,
-		Price:      sp.ProductMaxPrice,
-		Discounted: sp.isDiscounted(),
+func (sp SubProduct) ToProduct(publisherID uuid.UUID) (*product.Product, error) {
+	return product.NewProduct(product.NewProductArgs{
+		Name:        sp.ProductName,
+		ExternalID:  sp.ProductId,
+		Price:       sp.ProductMaxPrice,
+		Discounted:  sp.isDiscounted(),
+		PublisherID: publisherID,
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	series, err := seriesFinder.MatchOrCreateSeriesByName(nameCleaner.Clean(sp.ProductName), publisherID)
-	if err != nil {
-		return nil, err
-	}
-
-	product.SetSeriesID(series.ID())
-	return product, nil
 }
 
 func (sp SubProduct) isDiscounted() bool {

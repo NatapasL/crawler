@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"manga-crawler/internal/domain/catalogupdate/product"
 	"manga-crawler/internal/domain/catalogupdate/series"
-	"manga-crawler/internal/domain/catalogupdate/wholesale"
 	"manga-crawler/internal/domain/scraper"
 	"manga-crawler/internal/domain/scraper/siamintershop/categorylist"
 	"manga-crawler/internal/domain/scraper/siamintershop/productdetail"
@@ -49,8 +49,8 @@ func NewScraper(deps ScraperDependencies) *Scraper {
 	}
 }
 
-func (scraper Scraper) Scrape(next <-chan bool, product chan<- wholesale.Product) error {
-	defer close(product)
+func (scraper Scraper) Scrape(productChannel chan<- product.Product) error {
+	defer close(productChannel)
 
 	categoryList := scraper.ScrapeCategoryList()
 
@@ -59,44 +59,38 @@ func (scraper Scraper) Scrape(next <-chan bool, product chan<- wholesale.Product
 	func() {
 		for _, category := range categoryList {
 			responseProducts := scraper.ScrapeProductSearch(category.CategoryId)
+
 			for _, responseProduct := range responseProducts {
-				_, ok := <-next
-				if !ok {
-					return
-				}
-				p, err := responseProduct.ToProduct(scraper.seriesFinder, scraper.nameCleaner, sicPublisherID)
+				p, err := responseProduct.ToProduct(sicPublisherID)
 				if err != nil {
 					errs = append(errs, err)
 					continue
 				}
-				product <- p
+				productChannel <- *p
 
 				time.Sleep(time.Second * 1)
+
+				go func() {
+					subProducts := scraper.ScrapeSubProducts(responseProduct.ProductId)
+					for _, subProduct := range subProducts {
+						p, err := subProduct.ToProduct(sicPublisherID)
+						if err != nil {
+							errs = append(errs, err)
+							continue
+						}
+						productChannel <- *p
+					}
+				}()
+
 				productDetail := scraper.ScrapeProductDetail(responseProduct.ProductId)
-				_, ok = <-next
-				if !ok {
-					return
-				}
-				p, err = productDetail.ToProduct(scraper.seriesFinder, scraper.nameCleaner, sicPublisherID)
+
+				p, err = productDetail.ToProduct(sicPublisherID)
 				if err != nil {
 					errs = append(errs, err)
 					continue
 				}
-				product <- p
+				productChannel <- *p
 
-				subProducts := scraper.ScrapeSubProducts(responseProduct.ProductId)
-				for _, subProduct := range subProducts {
-					_, ok = <-next
-					if !ok {
-						return
-					}
-					p, err := subProduct.ToProduct(scraper.seriesFinder, scraper.nameCleaner, sicPublisherID)
-					if err != nil {
-						errs = append(errs, err)
-						continue
-					}
-					product <- p
-				}
 			}
 		}
 	}()

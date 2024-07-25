@@ -5,19 +5,22 @@ import (
 )
 
 type Product struct {
-	id          uuid.UUID
+	productID   uuid.UUID
+	priceID     uuid.UUID
 	name        string
 	seriesID    uuid.UUID
 	wholesaleID uuid.UUID
 	externalID  string
 	price       ProductPrice
+	publisherID uuid.UUID
 }
 
 type NewProductArgs struct {
-	Name       string
-	ExternalID string
-	Price      float64
-	Discounted bool
+	Name        string
+	ExternalID  string
+	Price       float64
+	Discounted  bool
+	PublisherID uuid.UUID
 }
 
 func NewProduct(args NewProductArgs) (*Product, error) {
@@ -27,10 +30,12 @@ func NewProduct(args NewProductArgs) (*Product, error) {
 	}
 
 	product := Product{
-		id:         uuid.New(),
-		name:       args.Name,
-		externalID: args.ExternalID,
-		price:      *price,
+		productID:   uuid.New(),
+		priceID:     uuid.New(),
+		name:        args.Name,
+		externalID:  args.ExternalID,
+		price:       *price,
+		publisherID: args.PublisherID,
 	}
 	err = product.validate()
 	if err != nil {
@@ -52,8 +57,8 @@ func (Product) validate() error {
 	return nil
 }
 
-func (p Product) ID() uuid.UUID {
-	return p.id
+func (p Product) ProductID() uuid.UUID {
+	return p.productID
 }
 
 func (p Product) Name() string {
@@ -77,5 +82,13 @@ func (p Product) Discounted() bool {
 }
 
 func (p Product) PriceID() uuid.UUID {
-	return p.price.id
+	return p.priceID
+}
+
+func (p Product) WholesaleID() uuid.UUID {
+	return p.wholesaleID
+}
+
+func (p Product) PublisherID() uuid.UUID {
+	return p.publisherID
 }
