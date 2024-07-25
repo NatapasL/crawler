@@ -21,3 +21,7 @@ type ProductPrice struct {
 	Wholesale Wholesale
 	Product   Product
 }
+
+func (ProductPrice) TableName() string {
+	return "product_price"
+}

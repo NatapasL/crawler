@@ -17,7 +17,3 @@ type SeriesNameMatcher struct {
 func (SeriesNameMatcher) TableName() string {
 	return "series_name_matcher"
 }
-
-func (snm *SeriesNameMatcher) SetSeriesID(id uuid.UUID) {
-	snm.SeriesID = id
-}

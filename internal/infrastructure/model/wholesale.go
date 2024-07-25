@@ -8,3 +8,7 @@ type Wholesale struct {
 
 	ProductPrices []ProductPrice `gorm:"foreignKey:WholesaleID"`
 }
+
+func (Wholesale) TableName() string {
+	return "wholesale"
+}

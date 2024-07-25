@@ -19,3 +19,7 @@ type Series struct {
 
 	Publisher Publisher
 }
+
+func (Series) TableName() string {
+	return "series"
+}

@@ -13,3 +13,7 @@ type Person struct {
 
 	Names []PersonName `gorm:"foreignKey:PersonID"`
 }
+
+func (Person) TableName() string {
+	return "person"
+}

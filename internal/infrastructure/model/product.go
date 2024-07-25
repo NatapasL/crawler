@@ -17,3 +17,7 @@ type Product struct {
 
 	Prices []ProductPrice `gorm:"foreignKey:ProductID"`
 }
+
+func (Product) TableName() string {
+	return "product"
+}
