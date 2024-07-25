@@ -28,9 +28,9 @@ func (repository SeriesRepository) FindByIds(ids []uuid.UUID) []model.Series {
 func (repository SeriesRepository) FindById(id uuid.UUID) (*series.Series, error) {
 	var s model.Series
 	repository.db.Joins(
-		"series_name ON series_name.series_id = series.id",
+		"LEFT JOIN series_name ON series_name.series_id = series.id",
 	).Joins(
-		"series_name_matcher ON series_name_matcher.series_id = series.id",
+		"LEFT JOIN series_name_matcher ON series_name_matcher.series_id = series.id",
 	).Where(
 		"series.id = ?", id,
 	).Find(&s)
@@ -62,7 +62,7 @@ func (repository SeriesRepository) FindById(id uuid.UUID) (*series.Series, error
 	})
 }
 
-func (repository SeriesRepository) Persist(series series.Series) (*uuid.UUID, error) {
+func (repository SeriesRepository) Persist(series series.Series) error {
 	savedSeries := model.Series{
 		ID:          series.ID(),
 		PublisherID: series.PublisherID(),
@@ -111,9 +111,9 @@ func (repository SeriesRepository) Persist(series series.Series) (*uuid.UUID, er
 
 	if err != nil {
 		log.Println(err)
-		return nil, err
+		return err
 	}
 
-	return &savedSeries.ID, nil
+	return nil
 
 }
