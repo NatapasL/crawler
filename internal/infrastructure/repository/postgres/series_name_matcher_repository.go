@@ -19,7 +19,7 @@ func NewSeriesNameMatcherRepository(db *gorm.DB) *SeriesNameMatcherRepository {
 
 func (repository SeriesNameMatcherRepository) FindByName(name string) (*series.SeriesNameMatcher, error) {
 	var seriesNameMatchers model.SeriesNameMatcher
-	err := repository.db.Distinct("series_id").Where("name = ?", name).First(&seriesNameMatchers).Error
+	err := repository.db.Where("name = ?", name).First(&seriesNameMatchers).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
