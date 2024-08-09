@@ -3,7 +3,7 @@ package siamintershop
 import "manga-crawler/internal/infrastructure/api_gateway/siamintershop"
 
 type siamintershopApiModule struct {
-	ApiRequest          *siamintershop.ApiRequest
+	ApiRequest          siamintershop.ApiRequest
 	ProductSearchApi    *siamintershop.ProductSearchApi
 	GetProductDetailApi *siamintershop.GetProductDetailApi
 	GetCategoryListApi  *siamintershop.GetCategoryListApi
@@ -13,7 +13,7 @@ type siamintershopApiModule struct {
 type siamintershopApiModuleDependency struct{}
 
 func initializeSiamintershopApiModule(deps siamintershopApiModuleDependency) siamintershopApiModule {
-	apiRequest := siamintershop.ApiRequest{}
+	apiRequest := siamintershop.NewApiRequest()
 	productSearchApi := siamintershop.NewProductSearchApi(
 		siamintershop.ProductSearchApiDependencies{Request: apiRequest},
 	)
@@ -28,7 +28,7 @@ func initializeSiamintershopApiModule(deps siamintershopApiModuleDependency) sia
 	)
 
 	return siamintershopApiModule{
-		ApiRequest:          &apiRequest,
+		ApiRequest:          apiRequest,
 		ProductSearchApi:    productSearchApi,
 		GetProductDetailApi: getProductDetailApi,
 		GetCategoryListApi:  getCategoryListApi,

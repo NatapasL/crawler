@@ -7,9 +7,17 @@ import (
 	"time"
 )
 
-type ApiRequest struct{}
+type ApiRequest interface {
+	Request(request *http.Request) ([]byte, error)
+}
 
-func (r ApiRequest) Request(request *http.Request) ([]byte, error) {
+type apiRequest struct{}
+
+func NewApiRequest() *apiRequest {
+	return &apiRequest{}
+}
+
+func (r apiRequest) Request(request *http.Request) ([]byte, error) {
 	var emptyByte []byte
 
 	res, err := r.doRequest(request)
@@ -30,12 +38,12 @@ func (r ApiRequest) Request(request *http.Request) ([]byte, error) {
 	return responseData, nil
 }
 
-func (ApiRequest) doRequest(request *http.Request) (*http.Response, error) {
+func (apiRequest) doRequest(request *http.Request) (*http.Response, error) {
 	client := &http.Client{}
 	return client.Do(request)
 }
 
-func (r ApiRequest) retry(request *http.Request) (*http.Response, error) {
+func (r apiRequest) retry(request *http.Request) (*http.Response, error) {
 	var res *http.Response
 	var err error
 
